@@ -7,5 +7,6 @@ router.post('/', authenticateJWT, authorizeRoles('manager'), ProjectController.c
 router.get('/', authenticateJWT, ProjectController.list);
 router.get('/:id', authenticateJWT, ProjectController.getById);
 router.put('/:id', authenticateJWT, authorizeRoles('manager'), ProjectController.update);
+router.delete('/:id', authenticateJWT, authorizeRoles('manager'), ProjectController.delete);
 
 module.exports = router; 

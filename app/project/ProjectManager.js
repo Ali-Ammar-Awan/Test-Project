@@ -47,6 +47,14 @@ class ProjectManager {
     await project.update(updateData);
     return project;
   }
+  static async deleteProjectById(projectId,managerId){
+    const project = await Project.findByPk(projectId);
+    if(!project || project.manager_id != managerId){
+        return null;
+    }
+    await Project.destroy({where:{id:projectId}});
+    return true;
+  }
 }
 
 module.exports = ProjectManager; 
