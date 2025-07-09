@@ -41,6 +41,8 @@ ProjectAssignment.init({
 });
 
 // Associations
+ProjectAssignment.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
 User.belongsToMany(Project, { through: ProjectAssignment, foreignKey: 'user_id', as: 'assignedProjects' });
 Project.belongsToMany(User, { through: ProjectAssignment, foreignKey: 'project_id', as: 'assignedUsers' });
 

@@ -13,6 +13,15 @@ class UserController {
       res.status(500).json({ error: 'Failed to create user', details: err.message });
     }
   }
+
+  static async getUsers(req, res) {
+    try {
+      const users = await UserManager.getUsersForAssignment();
+      res.status(200).json({ users });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to fetch users', details: err.message });
+    }
+  }
 }
 
 module.exports = UserController;

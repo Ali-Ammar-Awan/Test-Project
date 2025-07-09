@@ -1,4 +1,8 @@
 const ProjectManager = require('./ProjectManager');
+const { getProjectAssignments } = require('../../helpers/projectAssignmentHelper');
+const assignments = require('../../models/ProjectAssignment');
+const User = require('../../models/User');
+
 
 class ProjectController {
   static async create(req, res) {
@@ -60,6 +64,42 @@ class ProjectController {
     }
     catch(err){
         res.status(500).json({error: 'Failed to delete project ', details: err.message});
+    }
+  }
+
+  static async assignUsers(req, res) {
+    try {
+      const projectId = req.params.id;
+      const managerId = req.user.id;
+      const { assignments } = req.body;
+
+      if (!assignments) {
+        return res.status(400).json({ error: 'Assignments data is required' });
+      }
+
+      const result = await ProjectManager.assignUsersToProject(projectId, managerId, assignments);
+      res.status(200).json({ 
+        message: 'Users assigned to project successfully', 
+        assignments: result 
+      });
+    } catch (err) {
+      if (err.message.includes('Project not found') || err.message.includes('access denied')) {
+        return res.status(404).json({ error: err.message });
+      }
+      if (err.message.includes('must be') || err.message.includes('not found')) {
+        return res.status(400).json({ error: err.message });
+      }
+      res.status(500).json({ error: 'Failed to assign users to project', details: err.message });
+    }
+  }
+
+  static async getAssignees(req, res) {
+    try {
+      const projectId = req.params.id;
+      const assignees = await getProjectAssignments(projectId);
+      res.status(200).json({ assignees });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to fetch assignees', details: err.message });
     }
   }
 }
