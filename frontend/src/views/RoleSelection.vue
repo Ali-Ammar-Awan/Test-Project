@@ -1,0 +1,225 @@
+<template>
+  <div class="role-selection-container">
+    <!-- Left Side: Image -->
+    <div class="side-image"></div>
+
+    <!-- Right Side: Form -->
+    <div class="form-side">
+      <div class="top-link">
+        <span>Already have an account?</span>
+        <a @click.prevent="goToSignIn" href="#">Sign In</a>
+      </div>
+      <div class="form-content">
+        <h1>Join Us!</h1>
+        <p class="subheading">
+          To begin this journey, tell us what type of account you’d be opening.
+        </p>
+        <div class="role-cards">
+          <div
+            v-for="role in roles"
+            :key="role.value"
+            class="role-card"
+            @click="selectRole(role.value)"
+          >
+            <img :src="role.icon" class="role-icon" alt="" />
+            <div class="role-info">
+              <div class="role-title">{{ role.title }}</div>
+              <div class="role-desc">{{ role.desc }}</div>
+            </div>
+            <img :src="arrowIcon" class="arrow-icon" alt="arrow" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import managerIcon from "@/assets/manager.png";
+import developerIcon from "@/assets/Developer.png";
+import qaIcon from "@/assets/QA.png";
+import arrowIcon from "@/assets/logo.png";
+
+export default {
+  name: "RoleSelection",
+  data() {
+    return {
+      arrowIcon,
+      roles: [
+        {
+          value: "manager",
+          icon: managerIcon,
+          title: "Manager",
+          desc: "Signup as manager to manage the tasks and bugs",
+        },
+        {
+          value: "developer",
+          icon: developerIcon,
+          title: "Developer",
+          desc: "Signup as Developer to assign the relevant task to QA",
+        },
+        {
+          value: "qa",
+          icon: qaIcon,
+          title: "QA",
+          desc: "Signup as QA to create the bugs and report in tasks",
+        },
+      ],
+    };
+  },
+  methods: {
+    selectRole(role) {
+      this.$router.push({ name: "SignUp", query: { role } });
+    },
+    goToSignIn() {
+      this.$router.push({ name: "SignIn" });
+    },
+  },
+};
+</script>
+
+<style scoped>
+.role-selection-container {
+  display: flex;
+  max-height: 100vh;
+  max-width: 100vw;
+}
+
+.side-image {
+  width: 655px;
+  object-fit: contain;
+  background: url("@/assets/landingPage.png") center center / cover no-repeat;
+  margin-right: 371px;
+}
+
+.form-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.top-link {
+  position: absolute;
+  top: 32px;
+  right: 48px;
+  font-family: "Poppins";
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 0;
+  vertical-align: middle;
+  color: #8692ab;
+}
+
+.top-link a {
+  color: #007dfa;
+  margin-left: 6px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.top-link:hover {
+  text-decoration: underline;
+  text-decoration-color: #007dfa;
+  text-decoration-thickness: 3px;
+}
+
+.form-content {
+  max-width: 426px;
+  padding: 48px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+h1 {
+  font-family: "Poppins";
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 100%;
+  letter-spacing: 0;
+  vertical-align: middle;
+  color: #2f3367;
+  margin-bottom: 14px;
+}
+
+.subheading {
+  font-family: "Poppins";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 200%;
+  letter-spacing: 0;
+  vertical-align: middle;
+  color: #8692a6;
+  margin-bottom: 32px;
+}
+
+.role-cards {
+  width: 426px;
+  height: 108px;
+  display: flex;
+  flex-direction: column;
+}
+
+.role-card {
+  display: flex;
+  align-items: center;
+  border: 3px solid white;
+  border-radius: 6px;
+  padding: 23px 46px;
+  margin-bottom: 5px;
+}
+
+.role-card:hover {
+  border-color: #007dfa;
+}
+
+.role-icon {
+  max-width: 40px;
+  margin-right: 18px;
+  padding: 10px;
+  border: 1px solid #007dfa;
+  border-radius: 100%;
+  box-sizing: border-box;
+}
+
+.role-icon:hover {
+  box-shadow: 0 0 0 12px #007dfa;
+  color: white;
+}
+
+.role-info {
+  flex: 1;
+}
+
+.role-title {
+  font-family: "Poppins";
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  color: #2f3367;
+  margin-bottom: 10px;
+}
+
+.role-desc {
+  font-family: "Poppins";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  color: #8692ab;
+}
+
+.arrow-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 12px;
+}
+</style>
