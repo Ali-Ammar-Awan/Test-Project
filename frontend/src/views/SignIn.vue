@@ -67,7 +67,7 @@ export default {
           this.form
         );
         if (response.status === 201 || response.status === 200) {
-          this.$router.push({ name: "RoleSelection" });
+          this.$router.push({ name: "Projects" });
         } else {
           this.error = "Signin failed. Please try again.";
         }

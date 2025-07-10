@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import RoleSelection from "@/views/RoleSelection.vue";
 import SignIn from "@/views/SignIn.vue";
 import SignUp from "@/views/SignUp.vue";
+import Projects from "@/views/Projects.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -21,6 +22,11 @@ const routes = [
     name: "SignUp",
     component: SignUp,
   },
+  {
+    path: "/projects",
+    name:"Projects",
+    component: Projects
+  }
 ];
 const router = new VueRouter({
   routes,
