@@ -74,7 +74,7 @@ margin-left: 10px;
 
 .navbar-elements nav{
     display: flex;
-    margin-left: 357px;
+    margin-left: 220px;
 }
 .navbar-elements li {
     display: flex;
@@ -98,7 +98,7 @@ margin-left: 10px;
 
 .right-logos{
     display:flex;
-    margin-left: 183px;
+    margin-left: 160px;
    
 }
 
@@ -114,7 +114,7 @@ margin-left: 10px;
     width: 168px;
     height: 57px;
     opacity: 1;
-    margin-left: 30px;
+    margin-left: 10px;
     border-width: 1px;
 
 }

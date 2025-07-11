@@ -7,9 +7,10 @@ const User = require('../../models/User');
 class ProjectController {
   static async create(req, res) {
     try {
-      const { name } = req.body;
+      const { name, details } = req.body;
       const manager_id = req.user.id;
-      const project = await ProjectManager.createProject({ name, manager_id });
+      const image = req.file ? req.file.filename : null;
+      const project = await ProjectManager.createProject({ name, details, image, manager_id });
       res.status(201).json({ message: 'Project created successfully', project });
     } catch (err) {
       res.status(500).json({ error: 'Failed to create project', details: err.message });

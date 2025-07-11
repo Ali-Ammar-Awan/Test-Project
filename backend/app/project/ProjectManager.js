@@ -5,8 +5,8 @@ const { getProjectAssignments } = require('../../helpers/projectAssignmentHelper
 
 
 class ProjectManager {
-  static async createProject({ name, manager_id }) {
-    return Project.create({ name, manager_id });
+  static async createProject({ name, details, image, manager_id }) {
+    return Project.create({ name, details, image, manager_id });
   }
 
   static async getProjectsForUser(user) {

@@ -67,6 +67,8 @@ export default {
           this.form
         );
         if (response.status === 201 || response.status === 200) {
+          // Store the JWT token in localStorage
+          localStorage.setItem('token', response.data.token);
           this.$router.push({ name: "Projects" });
         } else {
           this.error = "Signin failed. Please try again.";
