@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="projects-list">
-      <div v-for="project in paginatedProjects" :key="project.id" class="project-card">
+      <div v-for="project in paginatedProjects" :key="project.id" class="project-card" @click="goToProjectBugs(project)">
         <div class="project-icon" :style="{ background: project.iconBg }">
           <img :src="project.imageUrl" />
            
@@ -40,7 +40,7 @@
         <div class="project-info">
           <div class="project-name">{{ project.name }}</div>
           <div class="project-desc">{{ project.details }}</div>
-          <div class="project-tasks"><span>Task Done:</span> {{ project.tasksDone }}/{{ project.tasksTotal }}</div>
+          <div class="project-tasks"><span>Task Done:</span> {{ project.resolvedBugs }}/{{ project.totalBugs }}</div>
         </div>
       </div>
     </div>
@@ -99,7 +99,6 @@ export default {
       if (this.search) {
         filtered = filtered.filter(p => p.name.toLowerCase().includes(this.search.toLowerCase()));
       }
-      // Add filter logic if needed
       return filtered;
     },
     sortedProjects() {
@@ -139,15 +138,29 @@ export default {
             'Authorization': `Bearer ${token}`,
           }
         });
-        this.projects = res.data.projects.map((p, i) => ({
-          ...p,
-          icon: this.icons[i % this.icons.length],
-          iconBg: this.iconBgs[i % this.iconBgs.length],
-          tasksDone: p.tasksDone || Math.floor(Math.random() * 40), 
-          tasksTotal: p.tasksTotal || 56, 
-          imageUrl: p.image ? `http://localhost:5000/uploads/${p.image}` : null,
+      
+        const projectsWithStats = await Promise.all(res.data.projects.map(async (p, i) => {
+          let totalBugs = 0;
+          let resolvedBugs = 0;
+          try {
+            const bugRes = await axios.get(`http://localhost:5000/bugs?project_id=${p.id}`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            totalBugs = bugRes.data.bugs.length;
+            resolvedBugs = bugRes.data.bugs.filter(bug => bug.status === 'resolved' || bug.status === 'completed').length;
+          } catch (e) {
           
+          }
+          return {
+            ...p,
+            icon: this.icons[i % this.icons.length],
+            iconBg: this.iconBgs[i % this.iconBgs.length],
+            totalBugs,
+            resolvedBugs,
+            imageUrl: p.image ? `http://localhost:5000/uploads/${p.image}` : null,
+          };
         }));
+        this.projects = projectsWithStats;
       } catch (err) {
         console.error('Failed to fetch projects:', err);
         alert('Failed to fetch projects: ' + (err.response?.data?.message || err.message));
@@ -162,6 +175,9 @@ export default {
     goToPage(n) {
       this.page = n;
     },
+    goToProjectBugs(project) {
+      this.$router.push({ name: 'ProjectBugs', params: { id: project.id } });
+    },
   },
   mounted() {
     this.fetchProjects();
@@ -175,7 +191,7 @@ export default {
   flex-direction: column;
   min-height: 100vh;
   background: #f7f8fa;
-  padding: 0 0 32px 0;
+  padding-bottom: 100px; 
 }
 
 
@@ -363,6 +379,7 @@ height: 58px;
   width: 141px;
   height: 22px;
   opacity: 1;
+  margin-bottom: 10px;
   font-family: "Poppins";
   font-weight: 600;
   font-size: 14.79px;
@@ -388,17 +405,20 @@ height: 58px;
   color: #87888C;
 }
 .pagination {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
-  justify-content:space-around;
-  padding: 32px 48px 0 48px;
-  margin-top: auto;
-  bottom: 0px;
+  justify-content: space-around;
+  padding: 16px 48px;
   font-size: 0.98rem;
-  background: #FFFFFF;
-
-
+  background: #ffffff;
+  border-top: 1px solid #e3e8ef;
+  z-index: 100;
 }
+
 .pagination-controls {
   display: flex;
   align-items: center;

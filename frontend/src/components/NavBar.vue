@@ -7,8 +7,8 @@
     </div>
     <div class="navbar-elements">
         <nav>
-            <li><img src="../assets/project.png" alt="project-logo"><span>Projects</span></li>
-            <li><img src="../assets/tasks.png" alt="tasks-logo"><span>Tasks</span></li>
+            <router-link to="/projects"><img src="../assets/project.png" alt="project-logo"><span>Projects</span></router-link>
+        <router-link to="/bugs"><img src="../assets/tasks.png" alt="tasks-logo"><span>Tasks</span></router-link>
             <li><img src="../assets/tickets.png" alt="tickets logo"><span>Tickets</span></li>
             <li><img src="../assets/payments.png" alt="payments logo"><span>Payments</span></li>
         </nav>
@@ -76,19 +76,24 @@ margin-left: 10px;
     display: flex;
     margin-left: 220px;
 }
-.navbar-elements li {
+.navbar-elements li , .navbar-elements a{
     display: flex;
+    text-decoration: none;
+    text-decoration-line: none;
+    color:#787486;
+
      
 }
 
-.navbar-elements li img{
+.navbar-elements li img, .navbar-elements a img{
     width:20px;
     height:20px;
     margin-top: 56px;
+
    
 }
 
-.navbar-elements li span{
+.navbar-elements li span, .navbar-elements a span{
     width:49px;
     height:18px;
     margin-top: 56px;

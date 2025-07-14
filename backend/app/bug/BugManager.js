@@ -64,7 +64,13 @@ class BugManager {
         { project_id: project_id ? project_id : projectIds }
       ];
     }
-    return Bug.findAll({ where });
+    return Bug.findAll({
+      where,
+      include: [
+        { model: User, as: 'developer', attributes: ['id', 'name', 'email', 'user_type'] },
+        { model: User, as: 'qa', attributes: ['id', 'name', 'email', 'user_type'] }
+      ]
+    });
   }
 
   static async getBugById(user, bugId) {;
