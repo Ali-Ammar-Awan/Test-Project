@@ -2,35 +2,41 @@
   <div class="bugs-page">
     <NavBar />
     <div class="header-section">
-      <div class="breadcrumbs">Projects &gt; <span>{{ projectName }}</span></div>
+      <div class="breadcrumbs">
+        Projects &gt; <span>{{ projectName }}</span>
+      </div>
       <div class="title-row">
         <h1>All bugs listing <span class="bug-badge">Bugs</span></h1>
         <div class="header-actions">
           <button class="settings-btn"><v-icon>mdi-cog</v-icon></button>
-          <button class="add-btn" @click="showAddModal = true">+ New Task bug</button>
+          <button class="add-btn" @click="showAddModal = true">
+            + New Task bug
+          </button>
         </div>
       </div>
       <div class="filters-row">
         <div class="filter1">
-        <input v-model="search" class="search-bar" placeholder="Search" />
+          <input v-model="search" class="search-bar" placeholder="Search" />
         </div>
         <div class="filter2">
-        <select v-model="filterType" class="filter-select">
-          <option value="all">Subtasks</option>
-        </select>
-        <select v-model="filterMe" class="filter-select">
-          <option value="me">Me</option>
-        </select>
-        <select v-model="filterAssignee" class="filter-select">
-          <option value="all">Assignees</option>
-          <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
-        </select>
+          <select v-model="filterType" class="filter-select">
+            <option value="all">Subtasks</option>
+          </select>
+          <select v-model="filterMe" class="filter-select">
+            <option value="me">Me</option>
+          </select>
+          <select v-model="filterAssignee" class="filter-select">
+            <option value="all">Assignees</option>
+            <option v-for="user in users" :key="user.id" :value="user.id">
+              {{ user.name }}
+            </option>
+          </select>
         </div>
         <div class="filter3">
-        <div class="view-toggle">
-          <button class="icon-btn"><v-icon>mdi-view-list</v-icon></button>
-          <button class="icon-btn"><v-icon>mdi-view-grid</v-icon></button>
-        </div>
+          <div class="view-toggle">
+            <button class="icon-btn"><v-icon>mdi-view-list</v-icon></button>
+            <button class="icon-btn"><v-icon>mdi-view-grid</v-icon></button>
+          </div>
         </div>
       </div>
     </div>
@@ -38,7 +44,13 @@
       <table class="bugs-table">
         <thead>
           <tr>
-            <th><input type="checkbox" v-model="selectAll" @change="toggleSelectAll" /></th>
+            <th>
+              <input
+                type="checkbox"
+                v-model="selectAll"
+                @change="toggleSelectAll"
+              />
+            </th>
             <th>BUG DETAILS</th>
             <th>STATE</th>
             <th>STATUS</th>
@@ -49,28 +61,49 @@
         </thead>
         <tbody>
           <tr v-for="bug in paginatedBugs" :key="bug.id">
-            <td><input type="checkbox" v-model="selectedBugs" :value="bug.id" /></td>
             <td>
-              <span :class="['bug-dot', bug.type]" />
+              <input type="checkbox" v-model="selectedBugs" :value="bug.id" />
+            </td>
+            <td>
+              <span :class="['bug-dot', bug.status]"></span>
+
               <span class="bug-title">{{ bug.title }}</span>
             </td>
             <td>{{ bug.type.charAt(0).toUpperCase() + bug.type.slice(1) }}</td>
             <td>
-              <span :class="['status-badge', bug.status]">{{ bug.statusLabel }}</span>
+              <span :class="['status-badge', bug.status]">{{
+                bug.statusLabel
+              }}</span>
             </td>
-            <td>{{ bug.deadline ? formatDate(bug.deadline) : '' }}</td>
+            <td>{{ bug.deadline ? formatDate(bug.deadline) : "" }}</td>
             <td>
               <div class="assignees">
-                <img v-if="bug.developer" :src="getUserAvatar(bug.developer)" :alt="bug.developer.name" class="avatar" />
-                <span v-if="bug.developer" class="assignee-name">{{ bug.developer.name }}</span>
+                <img
+                  v-if="bug.developer"
+                  :src="getUserAvatar(bug.developer)"
+                  :alt="bug.developer.name"
+                  class="avatar"
+                />
+                <!-- <span v-if="bug.developer" class="assignee-name">{{ bug.developer.name }}</span> -->
               </div>
             </td>
             <td>
               <div class="action-menu">
-                <button @click="openStatusMenu(bug)"><v-icon>mdi-dots-vertical</v-icon></button>
+                <button @click="openStatusMenu(bug)">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </button>
                 <div v-if="bug.showStatusMenu" class="status-menu">
-                  <div v-for="status in getStatusOptions(bug.type)" :key="status" @click="updateBugStatus(bug, status)" :class="['status-option', status]">{{ status }}</div>
-                  <div class="delete-option" @click="deleteBug(bug)">Delete</div>
+                  <div
+                    v-for="status in getStatusOptions(bug.type)"
+                    :key="status"
+                    @click="updateBugStatus(bug, status)"
+                    :class="['status-option', status]"
+                  >
+                    {{ status }}
+                  </div>
+                  <div class="delete-option" @click="deleteBug(bug)">
+                    Delete
+                  </div>
                 </div>
               </div>
             </td>
@@ -78,57 +111,78 @@
         </tbody>
       </table>
       <div class="pagination-row">
-        <span>Showing {{ startEntry }} to {{ endEntry }} of {{ totalBugs }} entries</span>
+        <span
+          >Showing {{ startEntry }} to {{ endEntry }} of
+          {{ totalBugs }} entries</span
+        >
+        <select v-model.number="perPage" class="per-page-select">
+          <option :value="10">10</option>
+        </select>
         <div class="pagination-controls">
           <button @click="prevPage" :disabled="page === 1">&lt;</button>
-          <span v-for="n in totalPages" :key="n" :class="['page-btn', { active: n === page }]" @click="goToPage(n)">{{ n }}</span>
-          <button @click="nextPage" :disabled="page === totalPages">&gt;</button>
+          <span
+            v-for="n in totalPages"
+            :key="n"
+            :class="['page-btn', { active: n === page }]"
+            @click="goToPage(n)"
+            >{{ n }}</span
+          >
+          <button @click="nextPage" :disabled="page === totalPages">
+            &gt;
+          </button>
         </div>
-        <select v-model.number="perPage" class="per-page-select">
-          <option :value="5">5</option>
-          <option :value="10">10</option>
-          <option :value="20">20</option>
-        </select>
       </div>
     </div>
-    <AddBugModal v-if="showAddModal" :visible="showAddModal" :users="projectDevelopers" :project-id="projectId" @close="showAddModal = false" @bug-added="fetchBugs" />
+    <AddBugModal
+      v-if="showAddModal"
+      :visible="showAddModal"
+      :users="projectDevelopers"
+      :project-id="projectId"
+      @close="showAddModal = false"
+      @bug-added="fetchBugs"
+    />
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import AddBugModal from '@/components/AddBugModal.vue';
-import NavBar from '@/components/NavBar.vue';
+import axios from "axios";
+import AddBugModal from "@/components/AddBugModal.vue";
+import NavBar from "@/components/NavBar.vue";
 
 export default {
-  name: 'Bugs',
+  name: "Bugs",
   components: { AddBugModal, NavBar },
+  props: ["id", "name"],
   data() {
     return {
       bugs: [],
-      users: [], 
-      projectDevelopers: [], 
-      search: '',
-      filterType: 'all',
-      filterMe: 'me',
-      filterAssignee: 'all',
+      users: [],
+      projectDevelopers: [],
+      search: "",
+      filterType: "all",
+      filterMe: "me",
+      filterAssignee: "all",
       page: 1,
       perPage: 10,
       showAddModal: false,
       selectedBugs: [],
       selectAll: false,
-      projectName: 'Android UI System', 
-      projectId: this.$route.params.id || null,
+      projectId: this.id,
+      projectName: this.name,
     };
   },
   computed: {
     filteredBugs() {
       let filtered = this.bugs;
       if (this.search) {
-        filtered = filtered.filter(b => b.title.toLowerCase().includes(this.search.toLowerCase()));
+        filtered = filtered.filter((b) =>
+          b.title.toLowerCase().includes(this.search.toLowerCase())
+        );
       }
-      if (this.filterAssignee !== 'all') {
-        filtered = filtered.filter(b => b.developer && b.developer.id === this.filterAssignee);
+      if (this.filterAssignee !== "all") {
+        filtered = filtered.filter(
+          (b) => b.developer && b.developer.id === this.filterAssignee
+        );
       }
       return filtered;
     },
@@ -152,45 +206,49 @@ export default {
   methods: {
     async fetchBugs() {
       try {
-        const token = localStorage.getItem('token');
-        let url = 'http://localhost:5000/bugs';
+        const token = localStorage.getItem("token");
+        let url = "http://localhost:5000/bugs";
         if (this.projectId) {
           url += `?project_id=${this.projectId}`;
         }
         const res = await axios.get(url, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
-        this.bugs = res.data.bugs.map(bug => ({
+        this.bugs = res.data.bugs.map((bug) => ({
           ...bug,
           statusLabel: this.getStatusLabel(bug.status),
           showStatusMenu: false,
         }));
       } catch (err) {
-        alert('Failed to fetch bugs: ' + (err.response?.data?.message || err.message));
+        alert(
+          "Failed to fetch bugs: " +
+            (err.response?.data?.message || err.message)
+        );
       }
     },
     async fetchUsers() {
       try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/users', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5000/users", {
+          headers: { Authorization: `Bearer ${token}` },
         });
         this.users = res.data.users;
-      } catch (err) {
-        
-      }
+      } catch (err) {}
     },
     async fetchProjectDevelopers() {
       if (!this.projectId) return;
       try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(`http://localhost:5000/projects/${this.projectId}/assignees`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-     
+        const token = localStorage.getItem("token");
+        const res = await axios.get(
+          `http://localhost:5000/projects/${this.projectId}/assignees`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
         this.projectDevelopers = res.data.assignees
-          .filter(a => a.role === 'developer')
-          .map(a => a.user);
+          .filter((a) => a.role === "developer")
+          .map((a) => a.user);
       } catch (err) {
         this.projectDevelopers = [];
       }
@@ -199,44 +257,54 @@ export default {
       return new Date(date).toLocaleDateString();
     },
     getUserAvatar(user) {
-      return require('@/assets/person.png');
+      return require("@/assets/avatar.png");
     },
     openStatusMenu(bug) {
-      this.bugs.forEach(b => b.showStatusMenu = false);
+      this.bugs.forEach((b) => (b.showStatusMenu = false));
       bug.showStatusMenu = true;
     },
     getStatusOptions(type) {
-      if (type === 'feature') return ['new', 'started', 'completed'];
-      if (type === 'bug') return ['new', 'started', 'resolved'];
+      if (type === "feature") return ["new", "started", "completed"];
+      if (type === "bug") return ["new", "started", "resolved"];
       return [];
     },
     getStatusLabel(status) {
-      if (status === 'new') return 'Pending';
-      if (status === 'started') return 'In progress';
-      if (status === 'completed' || status === 'resolved') return 'Closed';
+      if (status === "new") return "Pending";
+      if (status === "started") return "In progress";
+      if (status === "completed" || status === "resolved") return "Closed";
       return status;
     },
     async updateBugStatus(bug, status) {
       try {
-        const token = localStorage.getItem('token');
-        await axios.put(`http://localhost:5000/bugs/${bug.id}`, { status }, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const token = localStorage.getItem("token");
+        await axios.put(
+          `http://localhost:5000/bugs/${bug.id}`,
+          { status },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         this.fetchBugs();
       } catch (err) {
-        alert('Failed to update bug status: ' + (err.response?.data?.message || err.message));
+        alert(
+          "Failed to update bug status: " +
+            (err.response?.data?.message || err.message)
+        );
       }
     },
     async deleteBug(bug) {
-      if (!confirm('Are you sure you want to delete this bug?')) return;
+      if (!confirm("Are you sure you want to delete this bug?")) return;
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         await axios.delete(`http://localhost:5000/bugs/${bug.id}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         this.fetchBugs();
       } catch (err) {
-        alert('Failed to delete bug: ' + (err.response?.data?.message || err.message));
+        alert(
+          "Failed to delete bug: " +
+            (err.response?.data?.message || err.message)
+        );
       }
     },
     prevPage() {
@@ -250,7 +318,7 @@ export default {
     },
     toggleSelectAll() {
       if (this.selectAll) {
-        this.selectedBugs = this.paginatedBugs.map(b => b.id);
+        this.selectedBugs = this.paginatedBugs.map((b) => b.id);
       } else {
         this.selectedBugs = [];
       }
@@ -262,11 +330,11 @@ export default {
     this.fetchProjectDevelopers();
   },
   watch: {
-    '$route.params.id'(newId) {
+    "$route.params.id"(newId) {
       this.projectId = newId;
       this.fetchBugs();
       this.fetchProjectDevelopers();
-    }
+    },
   },
 };
 </script>
@@ -292,16 +360,14 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
-h1{
-  
-height: 48px;
-opacity: 1;
-font-family: "Inter";
-font-weight: 700;
-font-size: 36px;
-line-height: 48px;
-color: #252C32;
-
+h1 {
+  height: 48px;
+  opacity: 1;
+  font-family: "Inter";
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 48px;
+  color: #252c32;
 }
 .bug-badge {
   background: #f7d6d6;
@@ -345,14 +411,12 @@ color: #252C32;
   border-radius: 6px;
   border: 1px solid #e0e0e0;
   padding: 0 12px;
-  
 
-top: 262px;
-left: 253px;
+  top: 262px;
+  left: 253px;
 
-opacity: 1;
-gap: 16px;
-
+  opacity: 1;
+  gap: 16px;
 }
 
 .filter-select {
@@ -385,7 +449,8 @@ gap: 16px;
   width: 100%;
   border-collapse: collapse;
 }
-.bugs-table th, .bugs-table td {
+.bugs-table th,
+.bugs-table td {
   padding: 12px 8px;
   text-align: left;
   border-bottom: 1px solid #f0f0f0;
@@ -397,8 +462,26 @@ gap: 16px;
   border-radius: 50%;
   margin-right: 8px;
 }
-.bug-dot.bug { background: #e74c3c; }
-.bug-dot.feature { background: #50A885; }
+
+.bug-dot.new {
+  background-color: #e74c3c;
+}
+
+.bug-dot.started {
+  background-color: #007dfa;
+}
+
+.bug-dot.resolved,
+.bug-dot.completed {
+  background-color: #50a885;
+}
+
+.bug-dot.bug {
+  background: #e74c3c;
+}
+.bug-dot.feature {
+  background: #50a885;
+}
 .bug-title {
   font-weight: 500;
   color: #2f3367;
@@ -420,7 +503,7 @@ gap: 16px;
 }
 .status-badge.Closed {
   background: #d6f7e6;
-  color: #50A885;
+  color: #50a885;
 }
 .assignees {
   display: flex;
@@ -428,10 +511,12 @@ gap: 16px;
 }
 
 .avatar {
-  width: 32px;
+  width: 60px;
   height: 32px;
   border-radius: 50%;
+  -o-object-fit: cover;
   object-fit: cover;
+  margin-left: 20px;
 }
 .assignee-name {
   margin-left: 8px;
@@ -469,17 +554,21 @@ gap: 16px;
   background: #f7d6d6;
 }
 .pagination-row {
-   display: flex;
+  display: flex;
   align-items: center;
-  justify-content:space-around;
+  justify-content: space-around;
+  position: fixed;
+  right: 0;
+  left: 0;
+  bottom: 0;
   padding: 32px 48px 0 48px;
   margin-top: auto;
   bottom: 0px;
   font-size: 0.98rem;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 .pagination-controls {
-   display: flex;
+  display: flex;
   align-items: center;
   gap: 6px;
 }
@@ -502,4 +591,4 @@ gap: 16px;
   padding: 0 8px;
   margin-left: 12px;
 }
-</style> 
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div class="projects-page">
-   <NavBar></NavBar>
+    <NavBar></NavBar>
     <div class="projects-header">
       <div class="projects-title">
         <div class="green-line"></div>
@@ -10,32 +10,31 @@
       <div class="projects-actions">
         <div class="input-group">
           <img src="../assets/search.png" alt="search logo">
-        <input v-model="search" class="search-bar" placeholder="Search for Projects here" />
+          <input class="search-bar" placeholder="Search for Projects here" />
         </div>
         <button class="add-btn" @click="showAddModal = true">+ Add New Project</button>
         <div class="sort">
-        <select v-model="sortBy" class="sort-select">
-          <option value="name">Sort by</option>
-          
-        </select>
-            <img src="../assets/filter.png" alt="">
+          <select class="sort-select">
+            <option>Sort by</option>
+          </select>
+          <img src="../assets/filter.png" alt="">
         </div>
         <div class="sort">
-        <select v-model="filter" class="filter-select">
-          <option value="all">All Projects</option>
-        </select>
-        <img src="../assets/filter.png" alt="">
+          <select class="filter-select">
+            <option>All Projects</option>
+          </select>
+          <img src="../assets/filter.png" alt="">
         </div>
         <div class="invert-logo">
           <img src="../assets/navbar.png" alt="website logo">
         </div>
       </div>
     </div>
+
     <div class="projects-list">
       <div v-for="project in paginatedProjects" :key="project.id" class="project-card" @click="goToProjectBugs(project)">
         <div class="project-icon" :style="{ background: project.iconBg }">
           <img :src="project.imageUrl" />
-           
         </div>
         <div class="project-info">
           <div class="project-name">{{ project.name }}</div>
@@ -44,25 +43,25 @@
         </div>
       </div>
     </div>
+
     <div class="pagination">
       <span class="left-span">Showing {{ startEntry }} to {{ endEntry }} of {{ totalProjects }} entries</span>
-            <div class="visible-projects">
-              <div class="sort">
-              <span>Display</span>
-      <select v-model.number="perPage" class="per-page-select">
-        <option :value="10">10</option>
-      </select>
-      <img src="../assets/filter.png" alt="">
-      </div>
+      <div class="visible-projects">
+        <div class="sort">
+          <span>Display</span>
+          <select v-model.number="perPage" class="per-page-select">
+            <option :value="10">10</option>
+          </select>
+          <img src="../assets/filter.png" alt="">
+        </div>
       </div>
       <div class="pagination-controls">
         <button @click="prevPage" :disabled="page === 1">&lt;</button>
         <span v-for="n in totalPages" :key="n" :class="['page-btn', { active: n === page }]" @click="goToPage(n)">{{ n }}</span>
         <button @click="nextPage" :disabled="page === totalPages">&gt;</button>
       </div>
-
-
     </div>
+
     <AddProjectModal :visible="showAddModal" @close="showAddModal = false" @project-added="fetchProjects" />
   </div>
 </template>
@@ -74,18 +73,17 @@ import managerIcon from '@/assets/manager.png';
 import developerIcon from '@/assets/Developer.png';
 import qaIcon from '@/assets/QA.png';
 import NavBar from '@/components/NavBar.vue';
+
 export default {
   name: 'Projects',
-  components: { 
-  AddProjectModal,
-  NavBar },
+  components: {
+    AddProjectModal,
+    NavBar
+  },
   data() {
     return {
       userName: 'DevVinsnext',
       projects: [],
-      search: '',
-      sortBy: 'name',
-      filter: 'all',
       page: 1,
       perPage: 10,
       showAddModal: false,
@@ -94,27 +92,12 @@ export default {
     };
   },
   computed: {
-    filteredProjects() {
-      let filtered = this.projects;
-      if (this.search) {
-        filtered = filtered.filter(p => p.name.toLowerCase().includes(this.search.toLowerCase()));
-      }
-      return filtered;
-    },
-    sortedProjects() {
-      if (this.sortBy === 'name') {
-        return [...this.filteredProjects].sort((a, b) => a.name.localeCompare(b.name));
-      } else if (this.sortBy === 'tasks') {
-        return [...this.filteredProjects].sort((a, b) => (b.tasksDone || 0) - (a.tasksDone || 0));
-      }
-      return this.filteredProjects;
-    },
     paginatedProjects() {
       const start = (this.page - 1) * this.perPage;
-      return this.sortedProjects.slice(start, start + this.perPage);
+      return this.projects.slice(start, start + this.perPage);
     },
     totalProjects() {
-      return this.sortedProjects.length;
+      return this.projects.length;
     },
     totalPages() {
       return Math.ceil(this.totalProjects / this.perPage) || 1;
@@ -130,15 +113,11 @@ export default {
     async fetchProjects() {
       try {
         const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authentication token found');
-        }
+        if (!token) throw new Error('No authentication token found');
         const res = await axios.get('http://localhost:5000/projects', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-      
+
         const projectsWithStats = await Promise.all(res.data.projects.map(async (p, i) => {
           let totalBugs = 0;
           let resolvedBugs = 0;
@@ -148,9 +127,8 @@ export default {
             });
             totalBugs = bugRes.data.bugs.length;
             resolvedBugs = bugRes.data.bugs.filter(bug => bug.status === 'resolved' || bug.status === 'completed').length;
-          } catch (e) {
-          
-          }
+          } catch (e) {}
+
           return {
             ...p,
             icon: this.icons[i % this.icons.length],
@@ -160,6 +138,7 @@ export default {
             imageUrl: p.image ? `http://localhost:5000/uploads/${p.image}` : null,
           };
         }));
+
         this.projects = projectsWithStats;
       } catch (err) {
         console.error('Failed to fetch projects:', err);
@@ -176,14 +155,15 @@ export default {
       this.page = n;
     },
     goToProjectBugs(project) {
-      this.$router.push({ name: 'ProjectBugs', params: { id: project.id } });
+      this.$router.push({ name: 'ProjectBugs', params: { id: project.id, name: project.name } });
     },
   },
   mounted() {
     this.fetchProjects();
-  },
+  }
 };
 </script>
+
 
 <style scoped>
 .projects-page {
@@ -317,8 +297,8 @@ height: 18px;
 }
 
 .invert-logo{
-  width: 50px;
-  height: 45px;
+width: 50px;
+height: 45px;
 margin-top: 79px;
 margin-left: 13px;
 opacity: 1;

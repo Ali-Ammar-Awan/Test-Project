@@ -7,22 +7,32 @@
       </div>
 <div class = "modal-second-header">
   <h2>Add new bug</h2>
-  <p>...</p>
+  <p><v-icon>mdi-dots-horizontal</v-icon></p>
 </div>
       
 
       <form @submit.prevent="submitForm" enctype="multipart/form-data">
         <div class="form-row">
           <div class="form-group">
-            <label>Assign to</label>
-            <div class="assignee-icons">
-              <div>
-               <img :src="require('@/assets/avatar.png')" alt="Avatar" />
+  <label>Assign to</label>
+  <div class="assignee-icons" style="position: relative;">
+    <div @click="showDropdown = !showDropdown" class="avatar-dropdown-trigger">
+      <img :src="require('@/assets/avatar.png')" alt="Avatar" class="avatar" />
+    </div>
 
-              </div>
-              
-            </div>
-          </div>
+    <div v-if="showDropdown" class="dropdown-menu">
+      <div
+        v-for="dev in developers"
+        :key="dev.id"
+        class="dropdown-item"
+        @click="selectDeveloper(dev)"
+      >
+        {{ dev.name }}
+      </div>
+    </div>
+  </div>
+</div>
+
           <div class="form-group">
             <label>Add due date</label>
             <input type="date" v-model="form.deadline" class="styled-date" />
@@ -41,10 +51,10 @@
 
         <div class="form-group">
           <div class="text-area">
-          <label> Add here</label>
+          <label> Bug details</label>
           <textarea
             v-model="form.description"
-            placeholder="Bug details"
+            placeholder="Add Here"
             rows="3"
           ></textarea>
           </div>
@@ -97,9 +107,11 @@ export default {
         deadline: "",
         type: "bug",
         status: "new",
+        
         developer_id: "",
         screenshot: null,
       },
+      showDropdown: false,
       previewUrl: null,
       loading: false,
       defaultAvatar: "https://www.gravatar.com/avatar?d=mp",
@@ -118,6 +130,13 @@ export default {
         this.previewUrl = URL.createObjectURL(file);
       }
     },
+    
+  selectDeveloper(dev) {
+    this.form.developer_id = dev.id;
+    this.showDropdown = false;
+  },
+
+
     async submitForm() {
       this.loading = true;
       try {
@@ -136,6 +155,11 @@ export default {
         }
 
         const token = localStorage.getItem("token");
+        console.log(token);
+        console.log(formData);
+        for (let pair of formData.entries()) {
+  console.log(`${pair[0]}: ${pair[1]}`);
+}
         await axios.post("http://localhost:5000/bugs", formData, {
           headers: {
             Authorization: `Bearer ${token}`,

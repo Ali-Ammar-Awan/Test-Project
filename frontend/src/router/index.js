@@ -35,7 +35,8 @@ const routes = [
   {
     path: "/projects/:id/bugs",
     name: "ProjectBugs",
-    component: () => import("@/views/Bugs.vue")
+    component: () => import("@/views/Bugs.vue"),
+    props: true 
   }
 ];
 const router = new VueRouter({
