@@ -7,7 +7,7 @@
         <h1>Login</h1>
         <p class="subheading">Please enter your login details</p>
 
-        <form class="form-fields">
+        <form @click.prevent="onSignIn" class="form-fields">
           <div class="input-group">
             <img src="@/assets/email.png" alt="email icon" />
             <input
@@ -28,7 +28,7 @@
             />
           </div>
 
-          <button @click.prevent="onSignIn" type="submit" class="submit-btn">
+          <button type="submit" class="submit-btn">
             Login <span>></span>
           </button>
         </form>
@@ -67,7 +67,7 @@ export default {
           this.form
         );
         if (response.status === 201 || response.status === 200) {
-          // Store the JWT token in localStorage
+          
           localStorage.setItem('token', response.data.token);
           this.$router.push({ name: "Projects" });
         } else {
