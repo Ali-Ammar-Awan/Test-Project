@@ -6,6 +6,7 @@ class UserManager {
     const hashedPassword = await bcrypt.hash(password, 10);
     return User.create({
       name,
+      phone_number,
       email,
       password: hashedPassword,
       user_type,
