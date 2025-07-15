@@ -1,94 +1,140 @@
 <template>
   <div class="projects-page">
     <NavBar></NavBar>
+    <div class="line"></div>
     <div class="projects-header">
       <div class="projects-title">
         <div class="green-line"></div>
         <span class="projects-label">Projects</span>
-        <span class="projects-welcome">Hi {{ userName }}, welcome to ManageBug</span>
+        <span class="projects-welcome"
+          >Hi {{ userName }}, welcome to ManageBug</span
+        >
       </div>
       <div class="projects-actions">
         <div class="input-group">
-          <img src="../assets/search.png" alt="search logo">
+          <img src="../assets/search.png" alt="search logo" />
           <input class="search-bar" placeholder="Search for Projects here" />
         </div>
-        <button class="add-btn" @click="showAddModal = true">+ Add New Project</button>
+        <button class="add-btn" @click="showAddModal = true">
+          + Add New Project
+        </button>
         <div class="sort">
           <select class="sort-select">
             <option>Sort by</option>
           </select>
-          <img src="../assets/filter.png" alt="">
+          <img src="../assets/filter.png" alt="" />
         </div>
         <div class="sort">
           <select class="filter-select">
             <option>All Projects</option>
           </select>
-          <img src="../assets/filter.png" alt="">
+          <img src="../assets/filter.png" alt="" />
         </div>
         <div class="invert-logo">
-          <img src="../assets/navbar.png" alt="website logo">
+          <img src="../assets/navbar.png" alt="website logo" />
         </div>
       </div>
     </div>
-
-    <div class="projects-list">
-      <div v-for="project in paginatedProjects" :key="project.id" class="project-card" @click="goToProjectBugs(project)">
-        <div class="project-icon" :style="{ background: project.iconBg }">
-          <img :src="project.imageUrl" />
-        </div>
-        <div class="project-info">
-          <div class="project-name">{{ project.name }}</div>
-          <div class="project-desc">{{ project.details }}</div>
-          <div class="project-tasks"><span>Task Done:</span> {{ project.resolvedBugs }}/{{ project.totalBugs }}</div>
+    <div class="line2"></div>
+    <div class="three-row">
+      <div class="projects-list">
+        <div
+          v-for="project in paginatedProjects"
+          :key="project.id"
+          class="project-card"
+          @click="goToProjectBugs(project)"
+        >
+          <div class="project-icon" :style="{ background: project.iconBg }">
+            <img :src="project.imageUrl" />
+          </div>
+          <div class="project-info">
+            <div class="project-name">{{ project.name }}</div>
+            <div class="project-desc">{{ project.details }}</div>
+            <div class="project-tasks">
+              <span>Task Done:</span> {{ project.resolvedBugs }}/{{
+                project.totalBugs
+              }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <div class="pag-background">
+      <div class="pagination">
+        <span class="left-span"
+          >Showing {{ startEntry }} to {{ endEntry }} of
+          {{ totalProjects }} entries</span
+        >
 
-    <div class="pagination">
-      <span class="left-span">Showing {{ startEntry }} to {{ endEntry }} of {{ totalProjects }} entries</span>
-      <div class="visible-projects">
-        <div class="sort">
-          <span>Display</span>
-          <select v-model.number="perPage" class="per-page-select">
-            <option :value="10">10</option>
-          </select>
-          <img src="../assets/filter.png" alt="">
+        <div class="right-pagination">
+           <div class="right-pag">
+          <div class="visible-projects">
+<div class="display-control">
+  <span class="display-label">Display</span>
+  <div class="display-box">
+    <select v-model.number="perPage" class="per-page-select">
+      <option :value="10">10</option>
+    </select>
+    <span class="arrow">&#9662;</span> <!-- ▼ symbol -->
+  </div>
+</div>
+
+          </div>
+          <div class="pagination-controls">
+            <button @click="prevPage" :disabled="page === 1">&lt;</button>
+            <span
+              v-for="n in totalPages"
+              :key="n"
+              :class="['page-btn', { active: n === page }]"
+              @click="goToPage(n)"
+              >{{ n }}</span
+            >
+            <button @click="nextPage" :disabled="page === totalPages">
+              &gt;
+            </button>
+          </div>
+          </div>
         </div>
       </div>
-      <div class="pagination-controls">
-        <button @click="prevPage" :disabled="page === 1">&lt;</button>
-        <span v-for="n in totalPages" :key="n" :class="['page-btn', { active: n === page }]" @click="goToPage(n)">{{ n }}</span>
-        <button @click="nextPage" :disabled="page === totalPages">&gt;</button>
-      </div>
     </div>
-
-    <AddProjectModal :visible="showAddModal" @close="showAddModal = false" @project-added="fetchProjects" />
+    <AddProjectModal
+      :visible="showAddModal"
+      @close="showAddModal = false"
+      @project-added="fetchProjects"
+    />
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import AddProjectModal from '@/components/AddProjectModal.vue';
-import managerIcon from '@/assets/manager.png';
-import developerIcon from '@/assets/Developer.png';
-import qaIcon from '@/assets/QA.png';
-import NavBar from '@/components/NavBar.vue';
+import axios from "axios";
+import AddProjectModal from "@/components/AddProjectModal.vue";
+import managerIcon from "@/assets/manager.png";
+import developerIcon from "@/assets/Developer.png";
+import qaIcon from "@/assets/QA.png";
+import NavBar from "@/components/NavBar.vue";
 
 export default {
-  name: 'Projects',
+  name: "Projects",
   components: {
     AddProjectModal,
-    NavBar
+    NavBar,
   },
   data() {
     return {
-      userName: 'DevVinsnext',
+      userName: "DevVinsnext",
       projects: [],
       page: 1,
       perPage: 10,
       showAddModal: false,
       icons: [managerIcon, developerIcon, qaIcon],
-      iconBgs: ['#7de2d1', '#e6e97d', '#f7c6c7', '#b6a6f7', '#f7d6b6', '#b6d6f7'],
+      iconBgs: [
+        "#7de2d1",
+        "#e6e97d",
+        "#f7c6c7",
+        "#b6a6f7",
+        "#f7d6b6",
+        "#b6d6f7",
+      ],
     };
   },
   computed: {
@@ -112,37 +158,49 @@ export default {
   methods: {
     async fetchProjects() {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) throw new Error('No authentication token found');
-        const res = await axios.get('http://localhost:5000/projects', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No authentication token found");
+        const res = await axios.get("http://localhost:5000/projects", {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        const projectsWithStats = await Promise.all(res.data.projects.map(async (p, i) => {
-          let totalBugs = 0;
-          let resolvedBugs = 0;
-          try {
-            const bugRes = await axios.get(`http://localhost:5000/bugs?project_id=${p.id}`, {
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
-            totalBugs = bugRes.data.bugs.length;
-            resolvedBugs = bugRes.data.bugs.filter(bug => bug.status === 'resolved' || bug.status === 'completed').length;
-          } catch (e) {}
+        const projectsWithStats = await Promise.all(
+          res.data.projects.map(async (p, i) => {
+            let totalBugs = 0;
+            let resolvedBugs = 0;
+            try {
+              const bugRes = await axios.get(
+                `http://localhost:5000/bugs?project_id=${p.id}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+              totalBugs = bugRes.data.bugs.length;
+              resolvedBugs = bugRes.data.bugs.filter(
+                (bug) => bug.status === "resolved" || bug.status === "completed"
+              ).length;
+            } catch (e) {}
 
-          return {
-            ...p,
-            icon: this.icons[i % this.icons.length],
-            iconBg: this.iconBgs[i % this.iconBgs.length],
-            totalBugs,
-            resolvedBugs,
-            imageUrl: p.image ? `http://localhost:5000/uploads/${p.image}` : null,
-          };
-        }));
+            return {
+              ...p,
+              icon: this.icons[i % this.icons.length],
+              iconBg: this.iconBgs[i % this.iconBgs.length],
+              totalBugs,
+              resolvedBugs,
+              imageUrl: p.image
+                ? `http://localhost:5000/uploads/${p.image}`
+                : null,
+            };
+          })
+        );
 
         this.projects = projectsWithStats;
       } catch (err) {
-        console.error('Failed to fetch projects:', err);
-        alert('Failed to fetch projects: ' + (err.response?.data?.message || err.message));
+        console.error("Failed to fetch projects:", err);
+        alert(
+          "Failed to fetch projects: " +
+            (err.response?.data?.message || err.message)
+        );
       }
     },
     prevPage() {
@@ -155,15 +213,17 @@ export default {
       this.page = n;
     },
     goToProjectBugs(project) {
-      this.$router.push({ name: 'ProjectBugs', params: { id: project.id, name: project.name } });
+      this.$router.push({
+        name: "ProjectBugs",
+        params: { id: project.id, name: project.name },
+      });
     },
   },
   mounted() {
     this.fetchProjects();
-  }
+  },
 };
 </script>
-
 
 <style scoped>
 .projects-page {
@@ -171,25 +231,22 @@ export default {
   flex-direction: column;
   min-height: 100vh;
   background: #f7f8fa;
-  padding-bottom: 100px; 
+  padding-bottom: 100px;
 }
-
 
 .projects-header {
   display: flex;
   align-items: center;
 }
 
-.green-line{
-width: 4px;
-height: 72px;
-margin-top: 65px;
-margin-left: 221px;
-opacity: 1;
-background-color: #50A885;
-;
-
-} 
+.green-line {
+  width: 4px;
+  height: 72px;
+  margin-top: 65px;
+  margin-left: 221px;
+  opacity: 1;
+  background-color: #50a885;
+}
 
 .profile {
   margin-left: auto;
@@ -200,47 +257,47 @@ background-color: #50A885;
 .projects-title {
   display: flex;
   flex-direction: row;
+  margin-top: -57px;
 }
 .projects-label {
-width: 66px;
-height: 24px;
-margin-top: 79px;
-margin-left: 20px;
-opacity: 1;
-font-family: "Poppins";
-font-weight: 600;
-font-size: 16px;
-line-height: 100%;
-letter-spacing: 0%;
+  width: 66px;
+  height: 24px;
+  margin-top: 79px;
+  margin-left: 20px;
+  opacity: 1;
+  font-family: "Poppins";
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 .projects-welcome {
-    width: 280px;
-    height: 21px;
-    margin-top: 98px;
-    margin-left: -66px;
-    opacity: 1;
-    font-family: "Poppins";
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 100%;
-    letter-spacing: 0%;
-    color: #AEAEAE;
-
+  width: 280px;
+  height: 21px;
+  margin-top: 98px;
+  margin-left: -66px;
+  opacity: 1;
+  font-family: "Poppins";
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #aeaeae;
 }
 
 .projects-actions {
   display: flex;
-  
 }
 
 .input-group {
   position: relative;
+  margin-top: -65px;
 }
 .input-group img {
   width: 15px;
-  height: 15px;
+  height: 14px;
   position: absolute;
-  top: 82%;
+  top: 81%;
   left: 60px;
   transform: translateY(-50%);
   opacity: 1;
@@ -250,101 +307,97 @@ letter-spacing: 0%;
   width: 336px;
   height: 45px;
   padding-left: 48px;
-  border: 3px solid #F1F1F1;
+  border: 3px solid #f1f1f1;
   font-family: "Poppins";
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   font-size: 18px;
   font-weight: 400;
 }
 .search-bar {
-margin-top: 79px;
-margin-left: 43px;
-color:#6E6F72;
-opacity: 1;
-border-radius: 5px;
+  margin-top: 79px;
+  margin-left: 43px;
+  color: #6e6f72;
+  opacity: 1;
+  border-radius: 5px;
 }
 .add-btn {
-width: 163px;
-height: 45px;
-margin-top: 79px;
-margin-left: 22px;
-border-radius: 5px;
-opacity: 1;
-background-color: #007DFA;
-color:#FFFFFF;
-font-family: "Poppins";
-font-weight: 500;
-font-size: 14px;
-line-height: 100%;
-letter-spacing: 0px;
-vertical-align: middle;
-
+  width: 163px;
+  height: 45px;
+  margin-top: 14px;
+  margin-left: 22px;
+  border-radius: 5px;
+  opacity: 1;
+  background-color: #007dfa;
+  color: #ffffff;
+  font-family: "Poppins";
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  vertical-align: middle;
 }
-.sort-select , .filter-select {
-width: 110px;
-height: 45px;
-margin-top: 79px;
-margin-left: 13px;
-opacity: 1;
-text-align: center;
-
-}
-
-.sort img{
-
-width: 16px;
-height: 18px;
+.sort-select,
+.filter-select {
+  width: 110px;
+  height: 45px;
+  margin-top: 15px;
+  margin-left: -8px;
+  opacity: 1;
+  text-align: center;
 }
 
-.invert-logo{
-width: 50px;
-height: 45px;
-margin-top: 79px;
-margin-left: 13px;
-opacity: 1;
-background-color: #007DFA;
-align-content: center;
-text-align: center;
+.sort img {
+  width: 16px;
+  height: 18px;
 }
 
-.invert-logo img{
-width: 23px;
-height: 23px;
-filter:brightness(0) invert(1);
+.invert-logo {
+  width: 50px;
+  height: 45px;
+  margin-top: 13px;
+  margin-left: 13px;
+  opacity: 1;
+  background-color: #007dfa;
+  align-content: center;
+  text-align: center;
+}
+
+.invert-logo img {
+  width: 23px;
+  height: 23px;
+  filter: brightness(0) invert(1);
 }
 .projects-list {
-  
   display: flex;
   flex-wrap: wrap;
-  gap: 32px;
+  gap: 46px;
   margin-left: 221px;
+}
+
+.three-row {
+  width: 1500px;
 }
 
 .project-card {
   background: #fff;
-  border-radius: 9px;
-    box-shadow:0 4px 12px rgba(0, 0, 0, 0.08); 
-  padding: 28px 32px;
-  width: 320px;
-  height:202px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px 18px;
+  width: 360px;
+  height: 202px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 18px;
-  margin-top: 8px;
 }
 .project-icon {
-width: 58px;
-height: 58px;
-  border-radius: 12px;
+  width: 58px;
+  height: 58px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 12px;
-
-
-
-
 }
 .project-icon img {
   width: 32px;
@@ -356,47 +409,72 @@ height: 58px;
 .project-name {
   font-weight: 600;
 
-  width: 141px;
+  width: 180px;
   height: 22px;
   opacity: 1;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   font-family: "Poppins";
   font-weight: 600;
   font-size: 14.79px;
   line-height: 100%;
   letter-spacing: 1%;
-
-
 }
 .project-desc {
   width: 280px;
-  color: #87888C;
+  color: #87888c;
+  font-family: "Poppins";
   height: 19px;
+  margin-bottom: 4px;
   opacity: 1;
 
+  font-weight: 400;
+
+  font-size: 12px;
+
+  line-height: 100%;
+  letter-spacing: 1%;
 }
 .project-tasks {
   width: 280px;
+  font-family: "Poppins";
   height: 19px;
   left: 21px;
   opacity: 1;
+
+  font-weight: 400;
+
+  font-size: 12px;
+
+  line-height: 100%;
+  letter-spacing: 1%;
 }
-.project-tasks span{
-  color: #87888C;
+.project-tasks span {
+  color: #87888c;
 }
+
+
 .pagination {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 16px 48px;
-  font-size: 0.98rem;
-  background: #ffffff;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 220px;
+    background: #ffffff;
   border-top: 1px solid #e3e8ef;
+  font-size: 0.98rem;
   z-index: 100;
+  width: 100vw;
+}
+
+.right-pag{
+  display: flex;
+  gap:10px;
+}
+.right-pagination {
+  transform: translateX(-200px); /* move it 50px to the left */
 }
 
 .pagination-controls {
@@ -416,25 +494,85 @@ height: 58px;
   color: #fff;
   border: 1px solid #007dfa;
 }
-.left-span, .sort span{
-width: 193px;
-height: 22px;
-opacity: 1;
-font-family: "Poppins";
-font-weight: 400;
-font-size: 14px;
-line-height: 22px;
-letter-spacing: 0px;
-vertical-align: middle;
-color: #6C757D;
-
-}
-.per-page-select{
-  width:15px;
-  height:22px;
+.left-span,
+.sort span {
+  width: 193px;
+  height: 22px;
+  opacity: 1;
+  font-family: "Poppins";
+  font-weight: 400;
   font-size: 14px;
-  margin-left:10px ;
+  line-height: 22px;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  color: #6c757d;
+}
+.per-page-select {
+  width: 15px;
+  height: 22px;
+  font-size: 14px;
+  margin-left: 10px;
 }
 
+.line,
+.line2 {
+  width: 1165px;
+  height: 0px;
+  margin-top: 80px;
+  margin-left: 221px;
+  opacity: 1;
+  border-width: 1px;
+  border: 1px solid #ececee;
+}
+
+.line2 {
+  margin-top: 1px;
+  margin-bottom: 71px;
+}
+
+.display-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.display-label {
+  font-family: "Poppins";
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.display-box {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  border: 1px solid #dfdfdf;
+  border-radius: 4px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.per-page-select {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-family: "Poppins";
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+  padding: 0 20px 0 10px;
+  cursor: pointer;
+}
+
+.arrow {
+  position: absolute;
+  right: 8px;
+  pointer-events: none;
+  font-size: 12px;
+  color: #666;
+}
 
 </style>

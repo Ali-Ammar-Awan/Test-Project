@@ -37,8 +37,14 @@
                 hidden
               />
               <div class="upload-box">
-                <img v-if="previewUrl" :src="previewUrl" class="preview-img" />
-                <span v-else>Upload project photo</span>
+            <div v-if="previewUrl">
+  <img :src="previewUrl" class="preview-img" />
+</div>
+<div v-else class="upload-placeholder">
+  <img src="@/assets/gallery.png" alt="Gallery" class="gallery-icon" />
+  <span>Upload project photo</span>
+</div>
+
               </div>
             </label>
           </div>
@@ -139,15 +145,15 @@ export default {
 .modal-content {
   background: #fff;
   border-radius: 12px;
-  margin-top: 341px;
-  margin-left: 50px;
   padding: 32px 40px;
   width: 823px;
   height: 465px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
 }
+
 h2 {
   width: 200px;
   height: 31px;
@@ -271,6 +277,20 @@ border-width: 1.02px;
 border: 1.02px solid #D4D4D8
 
 }
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.gallery-icon {
+  width: 36px;
+  height: 36px;
+  opacity: 0.7;
+}
+
 
 
 </style>

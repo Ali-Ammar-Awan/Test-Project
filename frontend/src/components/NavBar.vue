@@ -71,6 +71,9 @@ font-size: 20px;
 line-height: 100%;
 margin-left: 10px;
 }
+.navbar-elements{
+  margin-left: -62px;
+}
 
 .navbar-elements nav{
     display: flex;

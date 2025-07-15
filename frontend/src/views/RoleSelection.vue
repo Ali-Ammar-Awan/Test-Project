@@ -21,7 +21,9 @@
             class="role-card"
             @click="selectRole(role.value)"
           >
+          <div class="upper">
             <img :src="role.icon" class="role-icon" alt="" />
+</div>
             <div class="role-info">
               <div class="role-title">{{ role.title }}</div>
               <div class="role-desc">{{ role.desc }}</div>
@@ -130,6 +132,7 @@ export default {
 
 .form-content {
   max-width: 426px;
+  height: 580px;
   padding: 48px 0;
   display: flex;
   flex-direction: column;
@@ -162,21 +165,48 @@ h1 {
   width: 426px;
   height: 108px;
   display: flex;
+  gap: 20px;
   flex-direction: column;
 }
 
 .role-card {
   display: flex;
   align-items: center;
-  border: 3px solid white;
+  border: 1px solid #F5F5F7;
   border-radius: 6px;
   padding: 23px 46px;
   margin-bottom: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .role-card:hover {
   border-color: #007dfa;
 }
+
+
+.role-card:first-child .upper {
+  background-color: #007dfa;
+  width: 40px; 
+  height: 40px;
+  margin-right: 18px;
+  border-radius: 50%;
+  border: 1px solid #007dfa;
+  box-sizing: border-box;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-card:first-child .upper img {
+  filter: brightness(0) invert(1);
+  width: 28px;       
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
 
 .role-icon {
   max-width: 40px;
@@ -187,10 +217,6 @@ h1 {
   box-sizing: border-box;
 }
 
-.role-icon:hover {
-  box-shadow: 0 0 0 12px #007dfa;
-  color: white;
-}
 
 .role-info {
   flex: 1;

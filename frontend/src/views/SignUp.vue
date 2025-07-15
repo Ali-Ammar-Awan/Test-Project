@@ -9,25 +9,54 @@
         <p class="subheading">Please fill your information below</p>
 
         <form class="form-fields" @submit.prevent="onSignUp">
-          <div class="input-group">
-            <img src="@/assets/person.png" alt="user icon" />
-            <input type="text" placeholder="Name" v-model="form.name" required />
-          </div>
+          <div class="input-group" :class="{ focused: focusedField === 'name' || form.name }">
+  <img src="@/assets/person.png" alt="user icon" />
+  <input
+    type="text"
+    placeholder="Name"
+    v-model="form.name"
+    required
+    @focus="focusedField = 'name'"
+    @blur="focusedField = ''"
+/>
+</div>
 
-          <div class="input-group">
-            <img src="@/assets/phone.png" alt="phone icon" />
-            <input type="text" placeholder="+92 342 418 6063" v-model="form.phone_number" required />
-          </div>
+<div class="input-group" :class="{ focused: focusedField === 'phone' || form.phone_number }">
+  <img src="@/assets/phone.png" alt="phone icon" />
+  <input
+    type="text"
+    placeholder="+92 342 418 6063"
+    v-model="form.phone_number"
+    required
+    @focus="focusedField = 'phone'"
+    @blur="focusedField = ''"
+/>
+</div>
 
-          <div class="input-group">
-            <img src="@/assets/email.png" alt="email icon" />
-            <input type="email" placeholder="E-mail" v-model="form.email" required />
-          </div>
+<div class="input-group" :class="{ focused: focusedField === 'email' || form.email }">
+  <img src="@/assets/email.png" alt="email icon" />
+  <input
+    type="email"
+    placeholder="E-mail"
+    v-model="form.email"
+    required
+    @focus="focusedField = 'email'"
+    @blur="focusedField = ''"
+/>
+</div>
 
-          <div class="input-group">
-            <img src="@/assets/lock.png" alt="password icon" />
-            <input type="password" placeholder="Password" v-model="form.password" required />
-          </div>
+<div class="input-group" :class="{ focused: focusedField === 'password' || form.password }">
+  <img src="@/assets/lock.png" alt="password icon" />
+  <input
+    type="password"
+    placeholder="Password"
+    v-model="form.password"
+    required
+    @focus="focusedField = 'password'"
+    @blur="focusedField = ''"
+/>
+</div>
+
 
           <button @click.prevent="onSignUp" type="submit" class="submit-btn">
             Sign Up <span>></span>
@@ -35,7 +64,8 @@
 
           <p v-if="error" class="error-message">{{ error }}</p>
         </form>
-
+        
+<div class="line"></div>
         <div class="bottom-text">
           Already have an account?
           <a @click.prevent="goToSignIn" href="#">Login to your account</a>
@@ -60,6 +90,7 @@ export default {
         user_type: ""
       },
       error: null,
+      focusedField: "",
     };
   },
 
@@ -114,7 +145,7 @@ export default {
 
 .form-content {
   width: 443px;
-  height: 672px;
+  height: 650px;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -150,6 +181,7 @@ h1 {
 
 .input-group {
   position: relative;
+  margin-bottom: 20px;
 }
 
 .input-group img {
@@ -160,7 +192,12 @@ h1 {
   left: 17px;
   transform: translateY(-50%);
   opacity: 1;
+   filter: grayscale(100%);
+  transition: 0.3s ease;
 }
+
+
+
 
 .input-group input {
   width: 443px;
@@ -171,7 +208,25 @@ h1 {
   font-family: "Poppins";
   background-color: #F5F5F7;
   font-size: 16px;
+  transition: 0.3s ease;
 }
+.input-group input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.input-group.focused input {
+  border-color: #80BEFC;
+  background-color: #fff;
+  outline: none;
+  box-shadow: none;
+}
+
+
+.input-group.focused img {
+  filter: brightness(0) saturate(100%) invert(0%);
+}
+
 .input-group input:hover{
   border-color:#80befc ;
 }
@@ -202,7 +257,7 @@ h1 {
   font-weight: 500;
   font-size: 16px;
   color: #8692a6;
-  text-align: center;
+  
   line-height: 100%;
   letter-spacing: 0%;
   vertical-align: middle;
@@ -213,6 +268,15 @@ h1 {
   margin-left: 6px;
   font-weight: 600;
   text-decoration: none;
+}
+.line{
+width: 443px;
+height: 0px;
+margin-top: 10px;
+margin-bottom: 15px;
+opacity: 1;
+border-width: 1px;
+border: 1px solid #ECECF0
 }
 
 .error-message {

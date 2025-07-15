@@ -8,31 +8,43 @@
         <p class="subheading">Please enter your login details</p>
 
         <form @click.prevent="onSignIn" class="form-fields">
-          <div class="input-group">
-            <img src="@/assets/email.png" alt="email icon" />
-            <input
-              type="email"
-              placeholder="E-mail"
-              v-model="form.email"
-              required
-            />
-          </div>
+          <div
+  class="input-group"
+  :class="{ focused: focusedInput === 'email' }"
+>
+  <img src="@/assets/email.png" alt="email icon" />
+  <input
+    type="email"
+    placeholder="E-mail"
+    v-model="form.email"
+    required
+    @focus="focusedInput = 'email'"
+    @blur="focusedInput = ''"
+/>
+</div>
 
-          <div class="input-group">
-            <img src="@/assets/lock.png" alt="password icon" />
-            <input
-              type="password"
-              placeholder="Password"
-              v-model="form.password"
-              required
-            />
-          </div>
+<div
+  class="input-group"
+  :class="{ focused: focusedInput === 'password' }"
+>
+  <img src="@/assets/lock.png" alt="password icon" />
+  <input
+    type="password"
+    placeholder="Password"
+    v-model="form.password"
+    required
+    @focus="focusedInput = 'password'"
+    @blur="focusedInput = ''"
+/>
+</div>
+
+          
 
           <button type="submit" class="submit-btn">
             Login <span>></span>
           </button>
         </form>
-
+<div class="line"></div>
         <div class="bottom-text">
           Don’t have an account account?
           <a @click.prevent="goToSignUp" href="#">Create Account</a>
@@ -53,6 +65,7 @@ export default {
         email: "",
         password: "",
       },
+      focusedInput: null,
     };
   },
   methods: {
@@ -104,8 +117,8 @@ export default {
 }
 
 .form-content {
-  width: 443px;
-  height: 672px;
+ width: 395px;
+    height: 463px;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -151,6 +164,16 @@ h1 {
   opacity: 1;
 }
 
+.input-group.focused input {
+  border-color: #80BEFC;
+  background-color: #fff;
+  outline: none;
+  box-shadow: none;
+}
+
+.input-group.focused img {
+  filter: brightness(0) saturate(100%) invert(0%);
+}
 .input-group input {
   width: 443px;
   height: 64px;
@@ -177,10 +200,10 @@ h1 {
   font-weight: 600;
   cursor: pointer;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
   padding: 18.5px;
+  margin-top: 20px;
 }
 .submit-btn span {
   margin-left: 50px;
@@ -191,15 +214,26 @@ h1 {
   font-weight: 500;
   font-size: 16px;
   color: #8692a6;
-  text-align: center;
   line-height: 100%;
   letter-spacing: 0%;
   vertical-align: middle;
+  width: 480px;
 }
+
+.line{
+width: 443px;
+height: 0px;
+margin-top: 10px;
+margin-bottom: 15px;
+opacity: 1;
+border-width: 1px;
+border: 1px solid #ECECF0
+}
+
 
 .bottom-text a {
   color: #007dfa;
-  margin-left: 6px;
+  margin-left: 49px;
   font-weight: 600;
   text-decoration: none;
 }
