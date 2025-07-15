@@ -32,7 +32,7 @@ Bug.init({
     allowNull: false,
   },
   status: {
-    type: DataTypes.STRING, // Will validate in business logic using enums
+    type: DataTypes.STRING, 
     allowNull: false,
   },
   project_id: {

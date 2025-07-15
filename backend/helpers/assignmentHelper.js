@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const ProjectAssignment = require('../models/ProjectAssignment');
 const Bug = require('../models/Bug');
 const { FEATURE_STATUSES, BUG_STATUSES } = require('../enums/Bug');
@@ -14,7 +15,8 @@ function isValidStatusForType(type, status) {
 
 async function isBugTitleUniqueInProject(title, projectId, excludeBugId = null) {
   const where = { title, project_id: projectId };
-  if (excludeBugId) where.id = { $ne: excludeBugId };
+  if (excludeBugId) where.id = { [Op.ne]: excludeBugId };
+;
   const existing = await Bug.findOne({ where });
   return !existing;
 }
