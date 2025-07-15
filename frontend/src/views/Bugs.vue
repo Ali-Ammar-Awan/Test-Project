@@ -353,7 +353,15 @@ export default {
 .breadcrumbs {
   color: #b0b0b0;
   font-size: 14px;
-  margin-bottom: 8px;
+  margin-left: 180px;
+}
+.breadcrumbs span{
+font-family: "Inter";
+font-weight: 400px;
+font-size: 12px;
+line-height: 16px;
+letter-spacing: 0%;
+color:black;
 }
 .title-row {
   display: flex;

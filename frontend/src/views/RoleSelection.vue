@@ -21,9 +21,9 @@
             class="role-card"
             @click="selectRole(role.value)"
           >
-          <div class="upper">
-            <img :src="role.icon" class="role-icon" alt="" />
-</div>
+            <div class="upper">
+              <img :src="role.icon" class="role-icon" alt="" />
+            </div>
             <div class="role-info">
               <div class="role-title">{{ role.title }}</div>
               <div class="role-desc">{{ role.desc }}</div>
@@ -105,9 +105,14 @@ export default {
 }
 
 .top-link {
+  width: 308px;
+height: 28px;
+
+opacity: 1;
+
   position: absolute;
   top: 32px;
-  right: 48px;
+  right: 38px;
   font-family: "Poppins";
   font-weight: 500;
   font-size: 18px;
@@ -132,7 +137,7 @@ export default {
 
 .form-content {
   max-width: 426px;
-  height: 580px;
+  height: 588px;
   padding: 48px 0;
   display: flex;
   flex-direction: column;
@@ -140,6 +145,9 @@ export default {
 }
 
 h1 {
+  width: 114px;
+  height: 42px;
+  opacity: 1;
   font-family: "Poppins";
   font-weight: 700;
   font-size: 28px;
@@ -147,14 +155,17 @@ h1 {
   letter-spacing: 0;
   vertical-align: middle;
   color: #2f3367;
-  margin-bottom: 14px;
 }
 
 .subheading {
+  width: 411px;
+  height: 56px;
+  opacity: 1;
   font-family: "Poppins";
   font-weight: 400;
   font-size: 16px;
-  line-height: 200%;
+  margin-top:7px;
+  line-height: 28px;
   letter-spacing: 0;
   vertical-align: middle;
   color: #8692a6;
@@ -172,27 +183,25 @@ h1 {
 .role-card {
   display: flex;
   align-items: center;
-  border: 1px solid #F5F5F7;
+  border: 1px solid #f5f5f7;
   border-radius: 6px;
-  padding: 23px 46px;
+  padding: 23px 31px;
   margin-bottom: 5px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 6px rgba(117, 116, 116, 0.1);
 }
 
 .role-card:hover {
   border-color: #007dfa;
 }
 
-
 .role-card:first-child .upper {
   background-color: #007dfa;
-  width: 40px; 
+  width: 40px;
   height: 40px;
-  margin-right: 18px;
+  margin-right: 26px;
   border-radius: 50%;
   border: 1px solid #007dfa;
   box-sizing: border-box;
-  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -200,13 +209,12 @@ h1 {
 
 .role-card:first-child .upper img {
   filter: brightness(0) invert(1);
-  width: 28px;       
+  width: 28px;
   height: 28px;
   margin: 0;
   padding: 0;
   border: none;
 }
-
 
 .role-icon {
   max-width: 40px;
@@ -217,12 +225,15 @@ h1 {
   box-sizing: border-box;
 }
 
-
 .role-info {
   flex: 1;
 }
 
 .role-title {
+  width: 74px;
+  height: 24px;
+  opacity: 1;
+
   font-family: "Poppins";
   font-weight: 500;
   font-size: 16px;
@@ -230,14 +241,17 @@ h1 {
   letter-spacing: 0px;
   vertical-align: middle;
   color: #2f3367;
-  margin-bottom: 10px;
+  margin-bottom: -8px;
 }
 
 .role-desc {
+  width: 238px;
+  height: 42px;
+  opacity: 1;
   font-family: "Poppins";
   font-weight: 400;
   font-size: 14px;
-  line-height: 100%;
+  line-height: 22px;
   letter-spacing: 0px;
   vertical-align: middle;
   color: #8692ab;

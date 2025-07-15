@@ -125,6 +125,10 @@ export default {
 }
 
 h1 {
+  width: 78PX;
+height: 42PX;
+opacity: 1;
+
   font-family: "Poppins";
   font-weight: 700;
   font-size: 28px;
@@ -132,9 +136,14 @@ h1 {
   line-height: 100%;
   letter-spacing: 0%;
   vertical-align: middle;
+  margin-bottom: 9px;
 }
 
 .subheading {
+  width: 243px;
+height: 24px;
+opacity: 1;
+
   font-family: "Poppins";
   font-size: 16px;
   color: #8692a6;
@@ -142,6 +151,7 @@ h1 {
   line-height: 100%;
   letter-spacing: 0%;
   vertical-align: middle;
+  margin-bottom:3px;
 }
 
 .form-fields {
@@ -189,7 +199,7 @@ h1 {
 }
 
 .submit-btn {
-  width: 206px;
+  width: 176px;
   height: 70px;
   background-color: #007dfa;
   color: #fff;

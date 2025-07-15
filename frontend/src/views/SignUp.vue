@@ -25,7 +25,7 @@
   <img src="@/assets/phone.png" alt="phone icon" />
   <input
     type="text"
-    placeholder="+92 342 418 6063"
+    placeholder="Mobile number"
     v-model="form.phone_number"
     required
     @focus="focusedField = 'phone'"
@@ -159,10 +159,17 @@ h1 {
   line-height: 100%;
   letter-spacing: 0%;
   vertical-align: middle;
+  width: 109px;
+  height: 42px;
+  opacity: 1;
 
 }
 
 .subheading {
+  width: 267px;
+height: 24px;
+opacity: 1;
+margin-top: 10px;
   font-family: "Poppins";
   font-size: 16px;
   color: #8692a6;
@@ -243,9 +250,9 @@ h1 {
   font-weight: 600;
   cursor: pointer;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
-  gap: 10px;
+  gap: 19px;
   padding:18.5px;
 }
 .submit-btn span{
@@ -257,10 +264,11 @@ h1 {
   font-weight: 500;
   font-size: 16px;
   color: #8692a6;
-  
+  height: 24px;
   line-height: 100%;
   letter-spacing: 0%;
   vertical-align: middle;
+  
 }
 
 .bottom-text a {
@@ -268,6 +276,7 @@ h1 {
   margin-left: 6px;
   font-weight: 600;
   text-decoration: none;
+  margin-left:50px
 }
 .line{
 width: 443px;
@@ -276,7 +285,7 @@ margin-top: 10px;
 margin-bottom: 15px;
 opacity: 1;
 border-width: 1px;
-border: 1px solid #ECECF0
+border: 1px solid #ECECF0;
 }
 
 .error-message {
