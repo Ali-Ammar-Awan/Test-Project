@@ -9,8 +9,8 @@
         <nav>
             <router-link to="/projects"><img src="../assets/project.png" alt="project-logo"><span>Projects</span></router-link>
         <router-link to="/bugs"><img src="../assets/tasks.png" alt="tasks-logo"><span>Tasks</span></router-link>
-            <li><img src="../assets/tickets.png" alt="tickets logo"><span>Tickets</span></li>
-            <li><img src="../assets/payments.png" alt="payments logo"><span>Payments</span></li>
+            <li><img src="../assets/tickets.png" alt="tickets logo"><span>Message</span></li>
+            <li><img src="../assets/payments.png" alt="payments logo"><span>Users</span></li>
         </nav>
     </div>
 
@@ -48,7 +48,7 @@ export default {
     margin-top: 50px;
 }
 .logo img{
-width: 32px;
+width: auto;
 height: 32px;
 opacity: 1;
 margin-left: 221px;
@@ -72,7 +72,7 @@ line-height: 100%;
 margin-left: 10px;
 }
 .navbar-elements{
-  margin-left: -62px;
+  margin-left: 14px;
 }
 
 .navbar-elements nav{
@@ -101,12 +101,12 @@ margin-left: 10px;
     height:18px;
     margin-top: 56px;
     margin-left: 10px;
-    margin-right: 20px;
+    margin-right: 46px;
 }
 
 .right-logos{
     display:flex;
-    margin-left: 160px;
+    margin-left: 103px;
    
 }
 
@@ -114,7 +114,7 @@ margin-left: 10px;
     width: 24px;
     height: 24px;
     gap:4px;
-    margin-right: 35px;
+    margin-right: 19px;
     margin-top: 54px;
 }
 .companylogo img{
@@ -122,7 +122,7 @@ margin-left: 10px;
     width: 168px;
     height: 57px;
     opacity: 1;
-    margin-left: 10px;
+    margin-left: 5px;
     border-width: 1px;
 
 }

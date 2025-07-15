@@ -1,22 +1,33 @@
 <template>
   <div class="bugs-page">
     <NavBar />
+    <div class="line"></div>
     <div class="header-section">
       <div class="breadcrumbs">
-        Projects &gt; <span>{{ projectName }}</span>
+        <span class="span1">Projects</span> &gt; <span>{{ projectName }}</span>
       </div>
       <div class="title-row">
         <h1>All bugs listing <span class="bug-badge">Bugs</span></h1>
         <div class="header-actions">
-          <button class="settings-btn"><v-icon>mdi-cog</v-icon></button>
-          <button class="add-btn" @click="showAddModal = true">
-            + New Task bug
-          </button>
+          <div class="rightHeader">
+            <button class="settings-btn"><v-icon>mdi-cog</v-icon></button>
+            <button class="settings-btn">
+              <v-icon>mdi-dots-horizontal</v-icon>
+            </button>
+
+            <button class="add-btn" @click="showAddModal = true">
+              + New Task bug
+            </button>
+          </div>
         </div>
       </div>
+      <div class="line2"></div>
       <div class="filters-row">
         <div class="filter1">
-          <input v-model="search" class="search-bar" placeholder="Search" />
+           <div class="input-group">
+          <img src="../assets/search.png" alt="search logo" />
+          <input class="search-bar" placeholder="Search" />
+        </div>
         </div>
         <div class="filter2">
           <select v-model="filterType" class="filter-select">
@@ -40,6 +51,7 @@
         </div>
       </div>
     </div>
+    <div class="line"></div>
     <div class="bugs-table-section">
       <table class="bugs-table">
         <thead>
@@ -355,13 +367,19 @@ export default {
   font-size: 14px;
   margin-left: 180px;
 }
-.breadcrumbs span{
-font-family: "Inter";
-font-weight: 400px;
-font-size: 12px;
-line-height: 16px;
-letter-spacing: 0%;
-color:black;
+.breadcrumbs span {
+  font-family: "Inter";
+  font-weight: 400px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0%;
+  color: black;
+  margin-left: 4px;
+}
+
+.breadcrumbs .span1 {
+  margin-right: 4px;
+  color: #b0b0b0;
 }
 .title-row {
   display: flex;
@@ -369,6 +387,7 @@ color:black;
   justify-content: space-between;
 }
 h1 {
+  width: auto;
   height: 48px;
   opacity: 1;
   font-family: "Inter";
@@ -376,14 +395,47 @@ h1 {
   font-size: 36px;
   line-height: 48px;
   color: #252c32;
+  margin-left: 181px;
 }
 .bug-badge {
-  background: #f7d6d6;
-  color: #e74c3c;
-  border-radius: 8px;
-  padding: 2px 10px;
-  font-size: 14px;
+  background: #fdf2f2;
+  color: #ec5962;
+  font-family: "Inter";
+  font-weight: 500;
+
+  font-size: 13px;
+
+  line-height: 25.45px;
+  letter-spacing: 0%;
+
   margin-left: 8px;
+}
+.input-group input {
+  width: 284px;
+  height: 40px;
+  padding-left: 48px;
+  border: 2px solid #f1f1f1;
+  font-family: "Poppins";
+  margin-left: 180px;
+  font-size: 18px;
+  font-weight: 400;
+}
+.search-bar {
+  margin-top: -3px;
+  margin-left: 26px;
+  opacity: 1;
+  border-radius: 5px;
+}
+
+.input-group img {
+  width: 15px;
+  height: 14px;
+  position: absolute;
+  
+     top: 31.2%;
+    left: 259px;
+  transform: translateY(-50%);
+  opacity: 1;
 }
 .header-actions {
   display: flex;
@@ -397,10 +449,14 @@ h1 {
   padding: 8px 18px;
   font-size: 16px;
   cursor: pointer;
+  font-family: "Inter";
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: -0.6%;
 }
 .settings-btn {
-  background: #f5f5f7;
-  border: none;
+  border: 1px solid #d0d5dd;
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 18px;
@@ -414,17 +470,19 @@ h1 {
   margin: 24px 0;
 }
 .search-bar {
-  width: 284px;
-  height: 40px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  padding: 0 12px;
-
   top: 262px;
   left: 253px;
 
   opacity: 1;
   gap: 16px;
+
+  width: 236px;
+  height: 40px;
+  opacity: 1;
+  border-width: 1px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #dde2e4;
 }
 
 .filter-select {
@@ -598,5 +656,24 @@ h1 {
   border: 1px solid #e0e0e0;
   padding: 0 8px;
   margin-left: 12px;
+}
+.line,
+.line2 {
+  width: 1245px;
+  height: 0px;
+  margin-top: 45px;
+  margin-left: 221px;
+  opacity: 1;
+  border-width: 1px;
+  border: 1px solid #ececee;
+}
+.line2 {
+  margin-left: 156px;
+  margin-top: 15px;
+}
+.rightHeader {
+  display: flex;
+  gap: 12px;
+  transform: translateX(-350px);
 }
 </style>

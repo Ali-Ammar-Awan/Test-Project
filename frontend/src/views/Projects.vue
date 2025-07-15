@@ -298,13 +298,13 @@ export default {
   height: 14px;
   position: absolute;
   top: 81%;
-  left: 60px;
+  left: 47px;
   transform: translateY(-50%);
   opacity: 1;
 }
 
 .input-group input {
-  width: 336px;
+  width: 385px;
   height: 45px;
   padding-left: 48px;
   border: 3px solid #f1f1f1;
@@ -315,7 +315,7 @@ export default {
 }
 .search-bar {
   margin-top: 79px;
-  margin-left: 43px;
+  margin-left: 26px;
   color: #6e6f72;
   opacity: 1;
   border-radius: 5px;
@@ -344,18 +344,21 @@ export default {
   margin-left: -8px;
   opacity: 1;
   text-align: center;
+  
 }
 
 .sort img {
   width: 16px;
   height: 18px;
+  margin-left:-15px;
+  margin-right: 51px;
 }
 
 .invert-logo {
   width: 50px;
   height: 45px;
   margin-top: 13px;
-  margin-left: 13px;
+  margin-left: -13px;
   opacity: 1;
   background-color: #007dfa;
   align-content: center;
@@ -383,7 +386,7 @@ export default {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 20px 18px;
-  width: 360px;
+  width: 385px;
   height: 202px;
   display: flex;
   flex-direction: column;
@@ -398,6 +401,7 @@ export default {
   align-items: center;
   justify-content: center;
   margin-right: 12px;
+  margin-bottom: 12px;
 }
 .project-icon img {
   width: 32px;
@@ -423,7 +427,7 @@ export default {
   width: 280px;
   color: #87888c;
   font-family: "Poppins";
-  height: 19px;
+  height: 21px;
   margin-bottom: 4px;
   opacity: 1;
 
@@ -474,7 +478,7 @@ export default {
   gap:10px;
 }
 .right-pagination {
-  transform: translateX(-200px); /* move it 50px to the left */
+  transform: translateX(-126px); /* move it 50px to the left */
 }
 
 .pagination-controls {
@@ -516,7 +520,7 @@ export default {
 
 .line,
 .line2 {
-  width: 1165px;
+  width: 1245px;
   height: 0px;
   margin-top: 80px;
   margin-left: 221px;

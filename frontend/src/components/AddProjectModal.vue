@@ -166,7 +166,7 @@ h2 {
   font-size: 21px;
   line-height: 100%;
   letter-spacing: 0%;
-  margin-bottom: 72px;
+  margin-bottom: 32px;
 }
 .form-group {
   margin-bottom: 18px;
@@ -206,13 +206,13 @@ input[type="text"] {
   width: 191px;
   height: 188px;
   opacity: 1;
-
   border: 2px dashed #bfc9d9;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fafbfc;
+  margin-left: 55px;
 }
 .upload-box span {
   width: 138px;
@@ -234,7 +234,7 @@ input[type="text"] {
 .modal-actions {
   display: flex;
   gap: 16px;
-  margin-top: 18px;
+  margin-top: 80px;
 }
 button span{
 width: 36px;
