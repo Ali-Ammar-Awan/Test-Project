@@ -534,7 +534,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 .display-label {
