@@ -229,23 +229,31 @@ export default {
 }
 
 .custom-date-wrapper {
+  width: 50px;
+  height: 50px;
+  border: 2px dashed #8D98AA;
+  border-radius: 50%;
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
-  width: 82px;
-  height: 44px;
-  margin-top: 20px;
 }
 
 .date-icon {
-  width: 100%;
-  height: auto;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
+
 
 .hidden-date-input {
   opacity: 0;
   position: absolute;
-  pointer-events: none;
+  display: flex;
+  position:fixed;
+      top: 235px;
+    left: 833px;
+ 
 }
 
 .close-btn {
@@ -519,10 +527,10 @@ input::placeholder {
   margin-left: -2px;
 }
 .custom-date-wrapper img {
-  width: 36px;
-  margin-left: 10px;
-  height: 36px;
-  margin-top: -35px;
+    width: 29px;
+    margin-left: -1px;
+    height: 36px;
+    margin-top: -3px;
 }
 
 
