@@ -17,7 +17,7 @@
   <label>Assign to</label>
   <div class="assignee-icons" style="position: relative;">
     <div @click="showDropdown = !showDropdown" class="avatar-dropdown-trigger">
-      <img :src="require('@/assets/avatar.png')" alt="Avatar" class="avatar" />
+      <img :src="require('@/assets/group.png')" alt="Avatar" class="avatar" />
     </div>
 
     <div v-if="showDropdown" class="dropdown-menu">
@@ -197,6 +197,7 @@ export default {
   background: #fff;
   border-radius: 12px;
   width: 786px;
+  height:795px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
@@ -235,13 +236,13 @@ background-color: #000000;
   align-items: center;
   padding: 2px 32px 16px;
   border-bottom: 1px solid #f0f0f0;
-  background-color:#F5F6F8;
+  
 }
 
 .modal-second-header h2{
   width: 430px;
 height: 41px;
-margin-top: 10px;
+margin-top: 25px;
 margin-left: -10px;
 opacity: 1;
 font-family: "Poppins";
@@ -279,7 +280,7 @@ form {
 label {
 width: 75px;
 height: 24px;
-margin-top: 4px;
+margin-top: 7px;
 margin-left: 0px;
 opacity: 1;
 font-family: "Poppins";
@@ -309,22 +310,47 @@ opacity: 1;
 }
 /* Inputs */
 input[type="text"],
-textarea,
+
 select,
 input[type="date"] {
   border: none;
   border-radius: 10px;
-  background: #f5f6f8;
+margin-left:-20px;
   padding: 10px 14px;
   font-size: 15px;
-  color: #333;
+ color:#DFDEE0;
+ font-weight: 500px;
+ font-family: "Poppins";
   outline: none;
   height: 44px;
+      margin-top: 23px;
+}
+input[type="text"]::placeholder{
+font-family: "Poppins";
+font-weight: 500;
+font-size: 34.45px;
+line-height: 100%;
+letter-spacing: 0%;
+color:#DFDEE0;
 }
 
 textarea {
-  min-height: 90px;
+  
   resize: vertical;
+  width: 716px;
+height: 53.56296157836914px;
+border:1.02px solid #F4F4F5;
+border-radius: 5.09px;
+border-width: 1.02px;
+opacity: 1;
+    padding: 14.2px;
+    margin-left: -2px;
+
+}
+
+
+.text-area::placeholder{
+color:#A1A1AA;
 }
 
 input[type="text"]{
@@ -394,6 +420,7 @@ letter-spacing: 0%;
   text-align: center;
   margin-left: 230px;
   cursor: pointer;
+  margin-top: 40px;
 }
 .upload-box img{
 width: 31px;
@@ -418,13 +445,34 @@ opacity: 1;
 
 /* Submit Button */
 .modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 16px 0;
+display: flex
+;
+    justify-content: flex-end;
+    padding: 16px 0;
+    width: 783px;
+    height: 86px;
+    transform: rotate(-180deg);
+    opacity: 1;
+    position: absolute;
+    top: 792px;
+    left: 528.5px;
+    background: #ffffff;
+    box-shadow: 0px 7px 28px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+
 }
 .add-btn {
+   display: flex;
+  position: absolute;
+  justify-content: center;
+      text-align: center;
+      width:133px;
+      height:40px;
   background: #007dfa;
+      left: 17px;
+    top: 20px;
   color: #fff;
+  transform: rotate(-180deg);
   padding: 10px 26px;
   font-size: 16px;
   font-weight: 500;
@@ -435,7 +483,9 @@ opacity: 1;
 .text-area{
   display: flex;
   flex-direction: column;
+  
 }
+
 
 .text-area label{
 width: 95px;
@@ -446,6 +496,7 @@ font-weight: 400;
 font-size: 16px;
 line-height: 100%;
 letter-spacing: 0%;
+    margin-left: -2px;
 
 }
 </style>
