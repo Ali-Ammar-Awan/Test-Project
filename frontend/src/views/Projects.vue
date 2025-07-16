@@ -26,7 +26,8 @@
         </div>
         <div class="sort">
           <select class="filter-select">
-            <option>All Projects</option>
+            <option>My project&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+
           </select>
           <img src="../assets/filter.png" alt="" />
         </div>
@@ -358,7 +359,7 @@ export default {
   width: 50px;
   height: 45px;
   margin-top: 13px;
-  margin-left: -13px;
+  margin-left: -23px;
   opacity: 1;
   background-color: #007dfa;
   align-content: center;
