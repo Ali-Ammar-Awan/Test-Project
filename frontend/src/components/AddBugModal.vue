@@ -313,7 +313,7 @@ form {
 .form-group {
   display: flex;
   width: auto;
-margin-right:60px;
+margin-right:20px;
   margin-bottom: 16px;
 }
 .due-date-label {
@@ -345,7 +345,7 @@ label {
 .form-group img {
   width: 82px;
   height: 44px;
-  margin-top: -13px;
+  margin-top: 3px;
   margin-left: 0px;
   opacity: 1;
 }

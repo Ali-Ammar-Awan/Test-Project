@@ -770,8 +770,8 @@ h1 {
   gap: 0;
 }
 .avatar {
-  width: 42px;
-  height: 25px;
+  width: 56px;
+  height: 35px;
   border-radius: 50%;
   object-fit: cover;
   margin-left: 0;
