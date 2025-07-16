@@ -9,53 +9,60 @@
         <p class="subheading">Please fill your information below</p>
 
         <form class="form-fields" @submit.prevent="onSignUp">
-          <div class="input-group" :class="{ focused: focusedField === 'name' || form.name }">
-  <img src="@/assets/person.png" alt="user icon" />
-  <input
-    type="text"
-    placeholder="Name"
-    v-model="form.name"
-    required
-    @focus="focusedField = 'name'"
-    @blur="focusedField = ''"
-/>
-</div>
+         <div class="input-group" :class="{ focused: focusedField === 'name' || form.name }">
+            <img src="@/assets/person.png" alt="user icon" />
+            <input
+              type="text"
+              placeholder=" "
+              v-model="form.name"
+              required
+              @focus="focusedField = 'name'"
+              @blur="focusedField = ''"
+            />
+            <label>Name</label>
+          </div>
 
-<div class="input-group" :class="{ focused: focusedField === 'phone' || form.phone_number }">
-  <img src="@/assets/phone.png" alt="phone icon" />
-  <input
-    type="text"
-    placeholder="Mobile number"
-    v-model="form.phone_number"
-    required
-    @focus="focusedField = 'phone'"
-    @blur="focusedField = ''"
-/>
-</div>
+          <!-- Phone -->
+          <div class="input-group" :class="{ focused: focusedField === 'phone' || form.phone_number }">
+            <img src="@/assets/phone.png" alt="phone icon" />
+            <input
+              type="text"
+              placeholder=" "
+              v-model="form.phone_number"
+              required
+              @focus="focusedField = 'phone'"
+              @blur="focusedField = ''"
+            />
+            <label>Mobile Number</label>
+          </div>
 
-<div class="input-group" :class="{ focused: focusedField === 'email' || form.email }">
-  <img src="@/assets/email.png" alt="email icon" />
-  <input
-    type="email"
-    placeholder="E-mail"
-    v-model="form.email"
-    required
-    @focus="focusedField = 'email'"
-    @blur="focusedField = ''"
-/>
-</div>
+          <!-- Email -->
+          <div class="input-group" :class="{ focused: focusedField === 'email' || form.email }">
+            <img src="@/assets/email.png" alt="email icon" />
+            <input
+              type="email"
+              placeholder=" "
+              v-model="form.email"
+              required
+              @focus="focusedField = 'email'"
+              @blur="focusedField = ''"
+            />
+            <label>Email</label>
+          </div>
 
-<div class="input-group" :class="{ focused: focusedField === 'password' || form.password }">
-  <img src="@/assets/lock.png" alt="password icon" />
-  <input
-    type="password"
-    placeholder="Password"
-    v-model="form.password"
-    required
-    @focus="focusedField = 'password'"
-    @blur="focusedField = ''"
-/>
-</div>
+          <!-- Password -->
+          <div class="input-group" :class="{ focused: focusedField === 'password' || form.password }">
+            <img src="@/assets/lock.png" alt="password icon" />
+            <input
+              type="password"
+              placeholder=" "
+              v-model="form.password"
+              required
+              @focus="focusedField = 'password'"
+              @blur="focusedField = ''"
+            />
+            <label>Password</label>
+          </div>
 
 
           <button @click.prevent="onSignUp" type="submit" class="submit-btn">
@@ -203,19 +210,39 @@ margin-top: 10px;
   transition: 0.3s ease;
 }
 
-
-
-
 .input-group input {
   width: 443px;
   height: 64px;
   padding-left: 48px;
-  border: 3px solid #F5F5F7;
+  padding-top: 18px;
+  padding-bottom: 8px;
+  border: 3px solid #f5f5f7;
   border-radius: 6px;
   font-family: "Poppins";
-  background-color: #F5F5F7;
+  background-color: #f5f5f7;
   font-size: 16px;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+
+.input-group label {
+  position: absolute;
+  left: 48px;
+  top: 22px;
+  color: #a9a9a9;
+  font-size: 16px;
+  font-family: "Poppins";
+  pointer-events: none;
+  transition: 0.2s ease all;
+  
+  padding: 0 4px;
+}
+
+.input-group.focused label {
+  top: -8px;
+  font-size: 12px;
+  color: #007dfa;
+  background: white;
 }
 .input-group input:focus {
   outline: none;
@@ -250,7 +277,6 @@ margin-top: 10px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
-  /* justify-content: center; */
   align-items: center;
   gap: 19px;
   padding:18.5px;
