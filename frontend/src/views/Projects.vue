@@ -359,7 +359,7 @@ export default {
   width: 50px;
   height: 45px;
   margin-top: 13px;
-  margin-left: -23px;
+  margin-left: -15px;
   opacity: 1;
   background-color: #007dfa;
   align-content: center;
