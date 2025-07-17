@@ -108,22 +108,24 @@ export default {
     goToSignIn() {
       this.$router.push({ name: "SignIn" });
     },
-    async onSignUp() {
-      try {
-        this.error = null;
-        const response = await axios.post("http://localhost:5000/users/signup", this.form);
+async onSignUp() {
+  try {
+    this.error = null;
+    const response = await axios.post("http://localhost:5000/auth/signup", this.form);
+    console.log("🟢 Signup response:", response);
 
-        if (response.status === 201 || response.status === 200) {
-         
-          this.$router.push({ name: "SignIn" });
-        } else {
-          this.error = "Signup failed. Please try again.";
-        }
-      } catch (err) {
-        this.error =
-          err.response?.data?.error || "Something went wrong during signup.";
-      }
-    },
+    if (response.status === 201 || response.status === 200) {
+      this.$router.push({ name: "SignIn" });
+    } else {
+      this.error = "Signup failed. Please try again.";
+    }
+  } catch (err) {
+     console.error("❌ Signup error:", err); 
+    this.error =
+      err.response?.data?.message || "Something went wrong during signup.";
+  }
+},
+
   },
 };
 </script>
