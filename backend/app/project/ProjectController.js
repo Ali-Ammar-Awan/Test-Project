@@ -26,9 +26,12 @@ class ProjectController {
   static async list(req, res) {
     try {
       const projects = await ProjectManager.getProjectsForUser(req.user);
-      res.status(200).json({ projects });
+      res.json({ projects });
     } catch (err) {
-      res.status(500).json({ error: 'Failed to fetch projects', details: err.message });
+      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_FETCH
+      });
     }
   }
 
@@ -36,12 +39,15 @@ class ProjectController {
     try {
       const projectId = req.params.id;
       const project = await ProjectManager.getProjectByIdForUser(projectId, req.user);
-      if (!project) {
-        return res.status(404).json({ error: 'Project not found or access denied' });
-      }
-      res.status(200).json({ project });
+      // if (!project) {
+      //   return res.status(404).json({ error: 'Project not found or access denied' });
+      // }
+      res.json({ project });
     } catch (err) {
-      res.status(500).json({ error: 'Failed to fetch project', details: err.message });
+      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_FETCH
+      });
     }
   }
 

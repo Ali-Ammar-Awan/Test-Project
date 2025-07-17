@@ -525,7 +525,7 @@ h1 {
   height: 14px;
   position: absolute;
 
-  top: 31.2%;
+  top: 31.2%;;
   left: 259px;
   transform: translateY(-50%);
   opacity: 1;

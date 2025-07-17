@@ -3,6 +3,7 @@ const ProjectAssignment = require('../../models/ProjectAssignment');
 const User = require('../../models/User');
 const { getProjectAssignments } = require('../../helpers/projectAssignmentHelper');
 const {ProjectHandler}=require('../../handlers');
+const { ProjectUtils } = require('../../utilities');
 
 
 class ProjectManager {
@@ -12,34 +13,26 @@ class ProjectManager {
   }
 
   static async getProjectsForUser(user) {
-    if (user.user_type === 'manager') {
-
-      return this._getManagerProjects(user.id);
+   if(ProjectUtils.validateUserType(user)){
+      return  ProjectHandler._getManagerProjects(user.id);
     } else {
-      return this._getAssignedProjects(user.id);
+      return ProjectHandler._getAssignedProjects(user.id);
     }
   }
 
-  static async _getManagerProjects(managerId) {
-    return Project.findAll({ where: { manager_id: managerId } });
-  }
 
-  static async _getAssignedProjects(userId) {
-    const assignments = await ProjectAssignment.findAll({ where: { user_id: userId } });
-    const projectIds = assignments.map(a => a.project_id);
-    return Project.findAll({ where: { id: projectIds } });
-  }
-
-  static async getProjectByIdForUser(projectId, user) {
-    const project = await Project.findByPk(projectId);
+  static async getProjectByIdForUser(projectId, user) 
+  {
+    const project = ProjectHandler.getProjectById(projectId)
+   
     if (!project) return null;
-    if (user.user_type === 'manager') {
-      if (project.manager_id !== user.id) return null;
+
+    if(ProjectUtils.validateUserType){
+    if (project.manager_id !== user.id) return null;
       return project;
-    } else {
-      const assignment = await ProjectAssignment.findOne({ where: { user_id: user.id, project_id: projectId } });
-      if (!assignment) return null;
-      return project;
+    }
+   else {
+     return ProjectHandler._getAssignedProjects(projectId);
     }
   }
 

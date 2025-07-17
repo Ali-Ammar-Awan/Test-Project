@@ -14,6 +14,13 @@ static validateManagerId (id) {
 
     }
 }
+
+static validateUserType(user){
+    if (user.user_type === 'manager') {
+        return true;
+    }
+    return false;
+}
 }
 
 module.exports=ProjectUtils;
