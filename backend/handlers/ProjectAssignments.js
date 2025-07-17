@@ -11,12 +11,12 @@ const { ProjectConstants } = require('../constants');
 
 class ProjectAssignmentHandler {
 
-    static async delete(){
+    static async delete(projectId){
     await ProjectAssignment.destroy({ where: { project_id: projectId } });
     }
 
     static async bulkcreation(assignmentData){
-        await ProjectAssignment.bulkCreate (assignmentData);
+    await ProjectAssignment.bulkCreate (assignmentData);
     }
 
 }

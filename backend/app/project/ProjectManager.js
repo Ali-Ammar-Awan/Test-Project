@@ -4,6 +4,7 @@ const User = require('../../models/User');
 const { getProjectAssignments } = require('../../helpers/projectAssignmentHelper');
 const {ProjectHandler, UserHandler, ProjectAssignmentHandler}=require('../../handlers');
 const { ProjectUtils } = require('../../utilities');
+const {ErrorCodes} = require('../../constants')
 
 
 class ProjectManager {
@@ -60,7 +61,7 @@ static async updateProjectById(projectId, managerId, updateData) {
 
 static async assignUsersToProject(projectId, managerId, assignments) {
 
-const project = ProjectHandler.getProjectById(projectId);
+const project = await ProjectHandler.getProjectById(projectId);
 
     if (!project || project.manager_id !== managerId) {
       throw new Exception(ProjectConstants.MESSAGES.FAILED_FETCH, ErrorCodes.DOCUMENT_NOT_FOUND, { reportError: true }).toJson();
@@ -98,6 +99,11 @@ const project = ProjectHandler.getProjectById(projectId);
     await ProjectAssignmentHandler.bulkcreation(assignmentData);
    
     return getProjectAssignments(projectId);
+
+
+
+
+   
   }
 }
 

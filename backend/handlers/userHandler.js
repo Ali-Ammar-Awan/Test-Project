@@ -16,7 +16,7 @@ class UserHandler {
     });
   }
 
-  static async findUserById (user){
+  static async findUserById (userIds){
     return await User.findAll({ where: { id: userIds } });
   }
    
