@@ -37,11 +37,11 @@ class ProjectManager {
   }
 
   static async updateProjectById(projectId, managerId, updateData) {
-    const project = await Project.findByPk(projectId);
+    const project = ProjectHandler.getProjectById(projectId)
     if (!project || project.manager_id !== managerId) {
       return null;
     }
-    await project.update(updateData);
+    project= ProjectHandler.updateProject(project,updateData);
     return project;
   }
   static async deleteProjectById(projectId,managerId){

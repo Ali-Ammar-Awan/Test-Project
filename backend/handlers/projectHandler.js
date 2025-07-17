@@ -28,5 +28,9 @@ class ProjectHandler {
     const project = await Project.findByPk(projectId);
     return project;
   }
+
+  static async updateProject(project,data){
+      return  await project.update(updateData);
+  }
 }
 module.exports = ProjectHandler;

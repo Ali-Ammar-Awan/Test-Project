@@ -39,9 +39,6 @@ class ProjectController {
     try {
       const projectId = req.params.id;
       const project = await ProjectManager.getProjectByIdForUser(projectId, req.user);
-      // if (!project) {
-      //   return res.status(404).json({ error: 'Project not found or access denied' });
-      // }
       res.json({ project });
     } catch (err) {
       return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
@@ -57,12 +54,13 @@ class ProjectController {
       const managerId = req.user.id;
       const updateData = req.body;
       const project = await ProjectManager.updateProjectById(projectId, managerId, updateData);
-      if (!project) {
-        return res.status(404).json({ error: 'Project not found or access denied' });
-      }
-      res.status(200).json({ message: 'Project updated successfully', project });
+     
+      res.json({ message:ProjectConstants.MESSAGES.SUCCESSFUL_UPDATE, project });
     } catch (err) {
-      res.status(500).json({ error: 'Failed to update project', details: err.message });
+      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: err.reportError ? err.message : ProjectConstants.MESSAGES.UNSUCCESSFUL_UPDATE
+      });
     }
   }
   static async delete(req,res){
