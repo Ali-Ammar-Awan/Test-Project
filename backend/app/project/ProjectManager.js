@@ -2,11 +2,13 @@ const Project = require('../../models/Project');
 const ProjectAssignment = require('../../models/ProjectAssignment');
 const User = require('../../models/User');
 const { getProjectAssignments } = require('../../helpers/projectAssignmentHelper');
+const {ProjectHandler}=require('../../handlers');
 
 
 class ProjectManager {
   static async createProject({ name, details, image, manager_id }) {
-    return Project.create({ name, details, image, manager_id });
+  const project = ProjectHandler.createProject({name, details, image, manager_id});
+    return project;
   }
 
   static async getProjectsForUser(user) {

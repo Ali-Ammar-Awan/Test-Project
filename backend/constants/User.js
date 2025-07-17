@@ -10,7 +10,7 @@ const User = Object.freeze({
     INVALID_DATA_TO_LOGIN: 'Invalid data to login',
     USER_DOES_NOT_EXIST: 'User does not exist',
     PASSWORD_DOES_NOT_MATCH: 'Invalid email or password',
-     FETCHING_USER_FAILED: 'Something went wrong while fetching the user data. Please try again.',
+    FETCHING_USER_FAILED: 'Something went wrong while fetching the user data. Please try again.',
   }
 
 });

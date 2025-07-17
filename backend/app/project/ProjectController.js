@@ -2,6 +2,9 @@ const ProjectManager = require('./ProjectManager');
 const { getProjectAssignments } = require('../../helpers/projectAssignmentHelper');
 const assignments = require('../../models/ProjectAssignment');
 const User = require('../../models/User');
+const {ProjectConstants}=require('../../constants')
+const Validators = require('../../helpers/Validators');
+const ErrorCodes = require('../../constants/ErrorCodes');
 
 
 class ProjectController {
@@ -11,9 +14,12 @@ class ProjectController {
       const manager_id = req.user.id;
       const image = req.file ? req.file.filename : null;
       const project = await ProjectManager.createProject({ name, details, image, manager_id });
-      res.status(201).json({ message: 'Project created successfully', project });
+      res.json({ success: true, data: project });
     } catch (err) {
-      res.status(500).json({ error: 'Failed to create project', details: err.message });
+      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: err.reportError ? err.message : ProjectConstants.MESSAGES.CREATING_PROJECT_FAILED
+      });
     }
   }
 
