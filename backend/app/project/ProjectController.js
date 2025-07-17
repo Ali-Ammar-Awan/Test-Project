@@ -63,18 +63,20 @@ class ProjectController {
       });
     }
   }
-  static async delete(req,res){
-    try{
-        const  projectId = req.params.id;
-        const managerId = req.user.id;
-        const project = await ProjectManager.deleteProjectById(projectId,managerId);
-        if(!project){
-            return res.status(404).json({error: 'Project not found or access denied'});
-        }
-        res.status(200).json({message: 'Project deleted successfully'});
-    }
-    catch(err){
-        res.status(500).json({error: 'Failed to delete project ', details: err.message});
+  static async delete(req, res) {
+    try {
+      const projectId = req.params.id;
+      const managerId = req.user.id;
+      await ProjectManager.deleteProjectById(projectId, managerId);
+      return res.status(200).json({
+        success: true,
+        message: ProjectConstants.MESSAGES.PROJECT_DELETED || 'Project deleted successfully'
+      });
+    } catch (err) {
+      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_DELETE
+      });
     }
   }
 
@@ -83,24 +85,20 @@ class ProjectController {
       const projectId = req.params.id;
       const managerId = req.user.id;
       const { assignments } = req.body;
-
       if (!assignments) {
-        return res.status(400).json({ error: 'Assignments data is required' });
+        return res.status(400).json({ success: false, message: 'Assignments data is required' });
       }
-
       const result = await ProjectManager.assignUsersToProject(projectId, managerId, assignments);
-      res.status(200).json({ 
-        message: 'Users assigned to project successfully', 
-        assignments: result 
+      return res.status(200).json({
+        success: true,
+        message: ProjectConstants.MESSAGES.USERS_ASSIGNED || 'Users assigned to project successfully',
+        data: result
       });
     } catch (err) {
-      if (err.message.includes('Project not found') || err.message.includes('access denied')) {
-        return res.status(404).json({ error: err.message });
-      }
-      if (err.message.includes('must be') || err.message.includes('not found')) {
-        return res.status(400).json({ error: err.message });
-      }
-      res.status(500).json({ error: 'Failed to assign users to project', details: err.message });
+      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_ASSIGN
+      });
     }
   }
 
@@ -108,9 +106,15 @@ class ProjectController {
     try {
       const projectId = req.params.id;
       const assignees = await getProjectAssignments(projectId);
-      res.status(200).json({ assignees });
+      return res.status(200).json({
+        success: true,
+        data: assignees
+      });
     } catch (err) {
-      res.status(500).json({ error: 'Failed to fetch assignees', details: err.message });
+      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_FETCH
+      });
     }
   }
 }

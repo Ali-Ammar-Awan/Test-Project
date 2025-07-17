@@ -4,6 +4,7 @@ const User = require('../../models/User');
 const Project = require('../../models/Project');
 const { BUG_TYPES } = require('../../enums/Bug');
 const { isUserAssignedToProject, isValidStatusForType, isBugTitleUniqueInProject } = require('../../helpers/assignmentHelper');
+const BugHandler = require('../../handlers');
 
 class BugManager {
   static async createBug({ title, description, deadline, screenshot, type, status, project_id, developer_id, qa_id }) {
@@ -28,17 +29,7 @@ class BugManager {
     if (!(await isBugTitleUniqueInProject(title, project_id))) {
       throw new Error('Bug title must be unique within the project');
     }
-    const bug = await Bug.create({
-      title,
-      description,
-      deadline,
-      screenshot,
-      type,
-      status,
-      project_id,
-      developer_id,
-      qa_id
-    });
+    const bug = await BugHandler.createBug({ title, description, deadline, screenshot, type, status, project_id, developer_id, qa_id });
     return bug;
   }
 

@@ -252,7 +252,7 @@ export default {
   display: flex;
   position:fixed;
       top: 235px;
-    left: 833px;
+    left: 788px;
  
 }
 

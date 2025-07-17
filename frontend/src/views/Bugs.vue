@@ -238,8 +238,8 @@
 
 <script>
 import axios from "axios";
-import AddBugModal from "@/components/AddBugModal.vue";
-import NavBar from "@/components/NavBar.vue";
+import AddBugModal from "../components/AddBugModal.vue";
+import NavBar from "../components/NavBar.vue";
 
 export default {
   name: "Bugs",
@@ -325,6 +325,7 @@ export default {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.users = res.data.users;
+        console.log(res.data.users);
       } catch (err) {}
     },
     async fetchProjectDevelopers() {
@@ -421,6 +422,7 @@ export default {
     this.fetchUsers();
     this.fetchProjectDevelopers();
   },
+
   watch: {
     "$route.params.id"(newId) {
       this.projectId = newId;
