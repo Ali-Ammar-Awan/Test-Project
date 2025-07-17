@@ -68,7 +68,7 @@ class ProjectController {
       const projectId = req.params.id;
       const managerId = req.user.id;
       await ProjectManager.deleteProjectById(projectId, managerId);
-      return res.status(200).json({
+      return res.json({
         success: true,
         message: ProjectConstants.MESSAGES.PROJECT_DELETED || 'Project deleted successfully'
       });
@@ -86,10 +86,10 @@ class ProjectController {
       const managerId = req.user.id;
       const { assignments } = req.body;
       if (!assignments) {
-        return res.status(400).json({ success: false, message: 'Assignments data is required' });
+        return json({ success: false, message: 'Assignments data is required' });
       }
       const result = await ProjectManager.assignUsersToProject(projectId, managerId, assignments);
-      return res.status(200).json({
+      return res.json({
         success: true,
         message: ProjectConstants.MESSAGES.USERS_ASSIGNED || 'Users assigned to project successfully',
         data: result
