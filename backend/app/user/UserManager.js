@@ -1,3 +1,4 @@
+const { UserHandler } = require('../../handlers');
 const User = require('../../models/User');
 const bcrypt = require('bcrypt');
 
@@ -9,13 +10,8 @@ class UserManager {
   }
 
   static async getUsersForAssignment() {
-    return User.findAll({
-      where: {
-        user_type: ['QA', 'developer']
-      },
-      attributes: ['id', 'name', 'email', 'user_type'],
-      order: [['name', 'ASC']]
-    });
+    const user = UserHandler.findUser();
+    return user;
   }
 }
 

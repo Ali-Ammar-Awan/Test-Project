@@ -6,9 +6,19 @@ class UserController {
   static async getUsers(req, res) {
     try {
       const users = await UserManager.getUsersForAssignment();
-      res.status(200).json({ users });
+      res.json({ 
+        success:true,
+        data:users
+      });
     } catch (err) {
-      res.status(500).json({ error: 'Failed to fetch users', details: err.message });
+
+      console.log(`getUser:: Request to fetch user failed. userId:: ${req.user.id} user:: ${req.user.email} params:: ${JSON.stringify(req.params)}`, err);
+
+      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: err.reportError ? err.message : UserConstants.MESSAGES.FETCHING_USER_FAILED
+      });
+
     }
   }
 }
