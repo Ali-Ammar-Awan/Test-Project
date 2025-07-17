@@ -113,7 +113,7 @@ class ProjectController {
     } catch (err) {
       return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_FETCH
+        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_FETCH_ASSIGNES
       });
     }
   }

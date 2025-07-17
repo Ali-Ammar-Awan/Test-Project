@@ -13,10 +13,10 @@ class AuthManager {
     console.log(`login:: Request to login user. data:: `, data);
     let user = await UserHandler.findUserByEmail(data.email);
     AuthUtil.validateUserToAuthenticate(user);
-console.log("hello world");
-       const passwordMatched = await bcrypt.compare(data.password, user.password);
+    console.log("hello world");
+    const passwordMatched = await bcrypt.compare(data.password, user.password);
        
-      if (!passwordMatched) {
+    if (!passwordMatched) {
 
       console.log(`login:: Password does not match. users:: ${JSON.stringify(user)} data:: `, data);
 

@@ -325,7 +325,6 @@ export default {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.users = res.data.users;
-        console.log(res.data.users);
       } catch (err) {}
     },
     async fetchProjectDevelopers() {

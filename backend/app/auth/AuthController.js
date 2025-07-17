@@ -7,11 +7,12 @@ class AuthController {
   static async login(req, res) {
     try {
       const { token, user } = await AuthManager.loginUser(req.body);
-     res.json({
-      success:true,
-      data:user,
-      token:token,
-     });
+
+      res.json({
+        success:true,
+        data:user,
+        token:token,
+      });
     } catch (err) {
       console.log(`login:: Request to login user failed. data:: `, req.body, err);
       return res.status(Validators.validateCode(err.code,ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
