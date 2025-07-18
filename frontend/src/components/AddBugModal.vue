@@ -169,7 +169,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 /* Modal Layout */
 .modal-overlay {
@@ -203,7 +202,7 @@ export default {
 .custom-date-wrapper {
   width: 50px;
   height: 50px;
-  border: 2px dashed #8D98AA;
+  border: 2px dashed #8d98aa;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -217,15 +216,13 @@ export default {
   object-fit: contain;
 }
 
-
 .hidden-date-input {
   opacity: 0;
   position: absolute;
   display: flex;
-  position:fixed;
-      top: 235px;
-    left: 788px;
- 
+  position: fixed;
+  top: 235px;
+  left: 788px;
 }
 
 .close-btn {
@@ -285,7 +282,7 @@ form {
 .form-group {
   display: flex;
   width: auto;
-margin-right:20px;
+  margin-right: 20px;
   margin-bottom: 16px;
 }
 .due-date-label {
@@ -297,7 +294,7 @@ label {
   height: 24px;
   margin-top: 17px;
   margin-left: 0px;
-  margin-right:15px;
+  margin-right: 15px;
   opacity: 1;
   font-family: "Poppins";
   font-weight: 400;
@@ -360,6 +357,12 @@ textarea {
 
 .text-area::placeholder {
   color: #a1a1aa;
+  font-family: "Poppins";
+  font-weight: 400;
+  font-size: 14.25px;
+
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 
 input[type="text"] {
@@ -476,11 +479,16 @@ input::placeholder {
   color: #fff;
   transform: rotate(-180deg);
   padding: 10px 26px;
-  font-size: 16px;
-  font-weight: 500;
+
   border: none;
   border-radius: 8px;
   cursor: pointer;
+
+  font-family: "Inter";
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: -0.6%;
 }
 .text-area {
   display: flex;
@@ -499,11 +507,9 @@ input::placeholder {
   margin-left: -2px;
 }
 .custom-date-wrapper img {
-    width: 29px;
-    margin-left: -1px;
-    height: 36px;
-    margin-top: -3px;
+  width: 29px;
+  margin-left: -1px;
+  height: 36px;
+  margin-top: -3px;
 }
-
-
 </style>
