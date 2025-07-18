@@ -78,12 +78,13 @@
                 @change="toggleSelectAll"
               />
             </th>
-            <th>BUG DETAILS</th>
-            <th>STATE</th>
-            <th>STATUS</th>
-            <th>DUE DATE</th>
-            <th>ASSIGNED TO</th>
-            <th>ACTION</th>
+            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>BUG DETAILS</th>
+
+            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>STATE</th>
+            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>STATUS</th>
+            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>DUE DATE</th>
+            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>ASSIGNED TO</th>
+            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>ACTION</th>
           </tr>
         </thead>
         <tbody>
@@ -120,7 +121,7 @@
                 {{ bug.title }}
               </span>
             </td>
-            <td>{{ bug.type.charAt(0).toUpperCase() + bug.type.slice(1) }}</td>
+            <td style="padding-left:15px;">{{ bug.type.charAt(0).toUpperCase() + bug.type.slice(1) }}</td>
             <td>
               <span
                 :class="[
@@ -669,6 +670,7 @@ h1 {
   line-height: 24.72px;
   letter-spacing: 0.18px;
   text-transform: uppercase;
+  margin-right: 30px;
 }
 .bugs-table th:first-child {
   width: 48px;
@@ -687,10 +689,15 @@ h1 {
   background: #fff;
   vertical-align: middle;
 }
+.bugs-table td img{
+margin-left: 33px;
+}
 .bugs-table td:first-child {
   width: 48px;
   padding-left: 24px;
 }
+
+
 .bugs-table td:last-child {
   text-align: right;
   padding-right: 24px;
