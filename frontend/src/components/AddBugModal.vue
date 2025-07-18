@@ -247,7 +247,7 @@ export default {
 
 
 .hidden-date-input {
-  opacity: 1;
+  opacity: 0;
   position: absolute;
   display: flex;
   position:fixed;
