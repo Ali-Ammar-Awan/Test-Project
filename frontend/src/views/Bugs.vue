@@ -241,6 +241,7 @@
 import axios from "axios";
 import AddBugModal from "../components/AddBugModal.vue";
 import NavBar from "../components/NavBar.vue";
+import api from "../axios"; 
 
 export default {
   name: "Bugs",
@@ -322,7 +323,7 @@ export default {
     async fetchUsers() {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/users", {
+        const res = await api.get("/users", {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.users = res.data.users;
@@ -332,8 +333,8 @@ export default {
       if (!this.projectId) return;
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(
-          `http://localhost:5000/projects/${this.projectId}/assignees`,
+        const res = await api.get(
+          `/projects/${this.projectId}/assignees`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -370,8 +371,8 @@ export default {
     async updateBugStatus(bug, status) {
       try {
         const token = localStorage.getItem("token");
-        await axios.put(
-          `http://localhost:5000/bugs/${bug.id}`,
+        await api.put(
+          `/bugs/${bug.id}`,
           { status },
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -389,7 +390,7 @@ export default {
       if (!confirm("Are you sure you want to delete this bug?")) return;
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://localhost:5000/bugs/${bug.id}`, {
+        await api.delete(`/bugs/${bug.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.fetchBugs();

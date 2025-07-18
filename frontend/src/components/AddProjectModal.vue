@@ -62,6 +62,7 @@
 
 <script>
 import axios from "axios";
+import api from '../axios'
 export default {
   name: "AddProjectModal",
   props: {
@@ -101,7 +102,7 @@ export default {
           throw new Error('No authentication token found');
         }
         
-        await axios.post('http://localhost:5000/projects', formData, {
+        await api.post('/projects', formData, {
           headers: { 
             'Authorization': `Bearer ${token}`,
           }

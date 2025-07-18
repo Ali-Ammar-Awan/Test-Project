@@ -55,6 +55,7 @@
 
 <script>
 import axios from "axios";
+import api from "../axios"; 
 export default {
   name: "SignIn",
 
@@ -74,8 +75,8 @@ export default {
     async onSignIn() {
       try {
         this.error = null;
-        const response = await axios.post(
-          "http://localhost:5000/auth/login",
+        const response = await api.post(
+          "/auth/login",
           this.form
         );
         if (response.status === 201 || response.status === 200) {

@@ -106,6 +106,7 @@
 
 <script>
 import axios from "axios";
+import api from '../axios';
 export default {
   name: "AddBugModal",
   props: {
@@ -177,7 +178,7 @@ export default {
         for (let pair of formData.entries()) {
           console.log(`${pair[0]}: ${pair[1]}`);
         }
-        await axios.post("http://localhost:5000/bugs", formData, {
+        await api.post("/bugs", formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",

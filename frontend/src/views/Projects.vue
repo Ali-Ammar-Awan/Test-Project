@@ -113,6 +113,7 @@ import managerIcon from "@/assets/manager.png";
 import developerIcon from "@/assets/Developer.png";
 import qaIcon from "@/assets/QA.png";
 import NavBar from "@/components/NavBar.vue";
+import api from "../axios"; 
 
 export default {
   name: "Projects",
@@ -161,7 +162,7 @@ export default {
       try {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("No authentication token found");
-        const res = await axios.get("http://localhost:5000/projects", {
+        const res = await api.get("/projects", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -170,8 +171,8 @@ export default {
             let totalBugs = 0;
             let resolvedBugs = 0;
             try {
-              const bugRes = await axios.get(
-                `http://localhost:5000/bugs?project_id=${p.id}`,
+              const bugRes = await api.get(
+                `/bugs?project_id=${p.id}`,
                 {
                   headers: { Authorization: `Bearer ${token}` },
                 }

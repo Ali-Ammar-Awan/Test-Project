@@ -41,6 +41,7 @@ import managerIcon from "@/assets/manager.png";
 import developerIcon from "@/assets/Developer.png";
 import qaIcon from "@/assets/QA.png";
 import arrowIcon from "@/assets/logo.png";
+import api from "../axios"; 
 
 export default {
   name: "RoleSelection",
