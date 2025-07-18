@@ -53,12 +53,11 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
-import api from "../axios"; 
+ <script>
+import authService from "../services/authService";
+
 export default {
   name: "SignIn",
-
   data() {
     return {
       form: {
@@ -66,6 +65,7 @@ export default {
         password: "",
       },
       focusedInput: null,
+      error: null,
     };
   },
   methods: {
@@ -75,24 +75,23 @@ export default {
     async onSignIn() {
       try {
         this.error = null;
-        const response = await api.post(
-          "/auth/login",
-          this.form
+
+        const { token } = await authService.login(
+          this.form.email,
+          this.form.password
         );
-        if (response.status === 201 || response.status === 200) {
-          localStorage.setItem("token", response.data.token);
-          this.$router.push({ name: "Projects" });
-        } else {
-          this.error = "Signin failed. Please try again.";
-        }
+
+        localStorage.setItem("token", token);
+        this.$router.push({ name: "Projects" });
       } catch (err) {
         this.error =
-          err.response?.data?.error || "Something went wrong during signin.";
+          err.response?.data?.error || "Something went wrong during login.";
       }
     },
   },
 };
 </script>
+
 
 <style scoped>
 .sign-up-page {

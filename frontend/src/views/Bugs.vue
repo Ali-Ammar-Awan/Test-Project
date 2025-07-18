@@ -242,6 +242,9 @@ import axios from "axios";
 import AddBugModal from "../components/AddBugModal.vue";
 import NavBar from "../components/NavBar.vue";
 import api from "../axios"; 
+import bugService from '../services/bugService';
+import userService from '../services/userService';
+import projectService from '../services/projectService';
 
 export default {
   name: "Bugs",
@@ -300,48 +303,29 @@ export default {
   methods: {
     async fetchBugs() {
       try {
-        const token = localStorage.getItem("token");
-        let url = "http://localhost:5000/bugs";
-        if (this.projectId) {
-          url += `?project_id=${this.projectId}`;
-        }
-        const res = await axios.get(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        this.bugs = res.data.bugs.map((bug) => ({
+        const bugs = await bugService.getBugs(this.projectId);
+        this.bugs = bugs.map((bug) => ({
           ...bug,
           statusLabel: this.getStatusLabel(bug.status),
           showStatusMenu: false,
         }));
       } catch (err) {
-        alert(
-          "Failed to fetch bugs: " +
-            (err.response?.data?.message || err.message)
-        );
+        alert("Failed to fetch bugs: " + (err.response?.data?.message || err.message));
       }
     },
+
     async fetchUsers() {
       try {
-        const token = localStorage.getItem("token");
-        const res = await api.get("/users", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        this.users = res.data.users;
-      } catch (err) {}
+        this.users = await userService.getUsers();
+      } catch (err) {
+        console.error(err);
+      }
     },
     async fetchProjectDevelopers() {
-      if (!this.projectId) return;
       try {
-        const token = localStorage.getItem("token");
-        const res = await api.get(
-          `/projects/${this.projectId}/assignees`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        this.projectDevelopers = res.data.data
-          .filter((a) => a.role === "developer")
+        const assignees = await projectService.getAssignees(this.projectId);
+        this.projectDevelopers = assignees
+          .filter((a) => a.role === 'developer')
           .map((a) => a.user);
       } catch (err) {
         this.projectDevelopers = [];
@@ -370,35 +354,19 @@ export default {
     },
     async updateBugStatus(bug, status) {
       try {
-        const token = localStorage.getItem("token");
-        await api.put(
-          `/bugs/${bug.id}`,
-          { status },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        await bugService.updateBugStatus(bug.id, status);
         this.fetchBugs();
       } catch (err) {
-        alert(
-          "Failed to update bug status: " +
-            (err.response?.data?.message || err.message)
-        );
+        alert("Failed to update bug status: " + (err.response?.data?.message || err.message));
       }
     },
     async deleteBug(bug) {
       if (!confirm("Are you sure you want to delete this bug?")) return;
       try {
-        const token = localStorage.getItem("token");
-        await api.delete(`/bugs/${bug.id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await bugService.deleteBug(bug.id);
         this.fetchBugs();
       } catch (err) {
-        alert(
-          "Failed to delete bug: " +
-            (err.response?.data?.message || err.message)
-        );
+        alert("Failed to delete bug: " + (err.response?.data?.message || err.message));
       }
     },
     prevPage() {

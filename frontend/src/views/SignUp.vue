@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import api from "../axios"; 
+import authService from "../services/authService";
 
 export default {
   name: "SignUp",
@@ -94,7 +94,7 @@ export default {
         phone_number: "",
         email: "",
         password: "",
-        user_type: ""
+        user_type: "",
       },
       error: null,
       focusedField: "",
@@ -102,33 +102,30 @@ export default {
   },
 
   created() {
-  this.form.user_type = this.$route.query.role || "developer";
+    this.form.user_type = this.$route.query.role || "developer";
   },
+
   methods: {
     goToSignIn() {
       this.$router.push({ name: "SignIn" });
     },
-async onSignUp() {
-  try {
-    this.error = null;
-    const response = await api.post("/auth/signup", this.form);
-    console.log("Signup response:", response);
 
-    if (response.status === 201 || response.status === 200) {
-      this.$router.push({ name: "SignIn" });
-    } else {
-      this.error = "Signup failed. Please try again.";
-    }
-  } catch (err) {
-     console.error("Signup error:", err); 
-    this.error =
-      err.response?.data?.message || "Something went wrong during signup.";
-  }
-},
-
+    async onSignUp() {
+      try {
+        this.error = null;
+        await authService.signup(this.form);
+        this.$router.push({ name: "SignIn" });
+      } catch (err) {
+        console.error("Signup error:", err);
+        this.error =
+          err.response?.data?.message ||
+          "Something went wrong during signup.";
+      }
+    },
   },
 };
 </script>
+
 
 <style scoped>
 

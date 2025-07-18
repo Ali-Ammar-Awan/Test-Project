@@ -61,8 +61,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import api from '../axios'
+import projectService from "../services/projectService";
+
 export default {
   name: "AddProjectModal",
   props: {
@@ -90,23 +90,7 @@ export default {
     async submitForm() {
       this.loading = true;
       try {
-        const formData = new FormData();
-        formData.append('name', this.form.name);
-        formData.append('details', this.form.details);
-        if (this.form.image) {
-          formData.append('image', this.form.image);
-        }
-
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authentication token found');
-        }
-        
-        await api.post('/projects', formData, {
-          headers: { 
-            'Authorization': `Bearer ${token}`,
-          }
-        });
+        await projectService.createProject(this.form);
 
         this.form = {
           name: "",
@@ -114,19 +98,23 @@ export default {
           image: null,
         };
         this.previewUrl = null;
-        
-        this.$emit('project-added');
-        this.$emit('close');
+
+        this.$emit("project-added");
+        this.$emit("close");
       } catch (err) {
-        console.error('Error creating project:', err);
-        alert('Failed to add project: ' + (err.response?.data?.message || err.message));
+        console.error("Error creating project:", err);
+        alert(
+          "Failed to add project: " +
+            (err.response?.data?.message || err.message)
+        );
       } finally {
         this.loading = false;
       }
-    }
+    },
   },
 };
 </script>
+
 
 <style scoped>
 .modal-overlay {

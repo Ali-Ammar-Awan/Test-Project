@@ -107,13 +107,14 @@
 </template>
 
 <script>
-import axios from "axios";
+
 import AddProjectModal from "@/components/AddProjectModal.vue";
+import NavBar from "@/components/NavBar.vue";
+import projectService from "../services/projectService";
+
 import managerIcon from "@/assets/manager.png";
 import developerIcon from "@/assets/Developer.png";
 import qaIcon from "@/assets/QA.png";
-import NavBar from "@/components/NavBar.vue";
-import api from "../axios"; 
 
 export default {
   name: "Projects",
@@ -160,43 +161,10 @@ export default {
   methods: {
     async fetchProjects() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("No authentication token found");
-        const res = await api.get("/projects", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const projectsWithStats = await Promise.all(
-          res.data.projects.map(async (p, i) => {
-            let totalBugs = 0;
-            let resolvedBugs = 0;
-            try {
-              const bugRes = await api.get(
-                `/bugs?project_id=${p.id}`,
-                {
-                  headers: { Authorization: `Bearer ${token}` },
-                }
-              );
-              totalBugs = bugRes.data.bugs.length;
-              resolvedBugs = bugRes.data.bugs.filter(
-                (bug) => bug.status === "resolved" || bug.status === "completed"
-              ).length;
-            } catch (e) {}
-
-            return {
-              ...p,
-              icon: this.icons[i % this.icons.length],
-              iconBg: this.iconBgs[i % this.iconBgs.length],
-              totalBugs,
-              resolvedBugs,
-              imageUrl: p.image
-                ? `http://localhost:5000/uploads/${p.image}`
-                : null,
-            };
-          })
+        this.projects = await projectService.getProjectsWithStats(
+          this.icons,
+          this.iconBgs
         );
-
-        this.projects = projectsWithStats;
       } catch (err) {
         console.error("Failed to fetch projects:", err);
         alert(
@@ -225,6 +193,7 @@ export default {
     this.fetchProjects();
   },
 };
+
 </script>
 
 <style scoped>

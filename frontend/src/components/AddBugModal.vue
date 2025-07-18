@@ -105,8 +105,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import api from '../axios';
+import bugService from "../services/bugService";
+
 export default {
   name: "AddBugModal",
   props: {
@@ -122,7 +122,6 @@ export default {
         deadline: "",
         type: "bug",
         status: "new",
-
         developer_id: "",
         screenshot: null,
       },
@@ -145,46 +144,17 @@ export default {
         this.previewUrl = URL.createObjectURL(file);
       }
     },
-
     openDatePicker() {
       this.$refs.dateInput.click();
     },
-
     selectDeveloper(dev) {
       this.form.developer_id = dev.id;
       this.showDropdown = false;
     },
-
     async submitForm() {
       this.loading = true;
       try {
-        const formData = new FormData();
-        formData.append("title", this.form.title);
-        formData.append("description", this.form.description);
-        formData.append("deadline", this.form.deadline);
-        formData.append("type", this.form.type);
-        formData.append("status", this.form.status);
-        formData.append("developer_id", this.form.developer_id);
-        if (this.form.screenshot) {
-          formData.append("screenshot", this.form.screenshot);
-        }
-        if (this.projectId) {
-          formData.append("project_id", this.projectId);
-        }
-
-        const token = localStorage.getItem("token");
-        console.log(token);
-        console.log(formData);
-        for (let pair of formData.entries()) {
-          console.log(`${pair[0]}: ${pair[1]}`);
-        }
-        await api.post("/bugs", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
+        await bugService.createBug(this.form, this.projectId);
         this.$emit("bug-added");
         this.$emit("close");
       } catch (err) {
@@ -198,6 +168,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 /* Modal Layout */
