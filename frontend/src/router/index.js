@@ -43,4 +43,17 @@ const router = new VueRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  const publicPages = ['RoleSelection', 'SignIn', 'SignUp'];
+  const authRequired = !publicPages.includes(to.name);
+  const loggedIn = !!localStorage.getItem('token');
+
+  if (authRequired && !loggedIn) {
+  
+    return next({ name: 'SignIn' });
+  }
+  next();
+});
+
+
 export default router;
