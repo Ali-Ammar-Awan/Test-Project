@@ -78,13 +78,31 @@
                 @change="toggleSelectAll"
               />
             </th>
-            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>BUG DETAILS</th>
+            <th>
+              <span style="color: lightgrey; margin-right: 10px">&#124;</span
+              >BUG DETAILS
+            </th>
 
-            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>STATE</th>
-            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>STATUS</th>
-            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>DUE DATE</th>
-            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>ASSIGNED TO</th>
-            <th><span style="color:lightgrey; margin-right:10px;">&#124;</span>ACTION</th>
+            <th>
+              <span style="color: lightgrey; margin-right: 10px">&#124;</span
+              >STATE
+            </th>
+            <th>
+              <span style="color: lightgrey; margin-right: 10px">&#124;</span
+              >STATUS
+            </th>
+            <th>
+              <span style="color: lightgrey; margin-right: 10px">&#124;</span
+              >DUE DATE
+            </th>
+            <th>
+              <span style="color: lightgrey; margin-right: 10px">&#124;</span
+              >ASSIGNED TO
+            </th>
+            <th>
+              <span style="color: lightgrey; margin-right: 10px">&#124;</span
+              >ACTION
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -116,12 +134,25 @@
                   overflow: hidden;
                   text-overflow: ellipsis;
                   vertical-align: middle;
+
+                  text-align: center;
+                  font-family: 'Poppins';
+                  font-weight: 400;
+                  font-style: Regular;
+                  font-size: 14.36px;
+
+                  line-height: 166%;
+                  letter-spacing: 0.41px;
+                  vertical-align: middle;
+                  color: #3A3541AD;
                 "
               >
                 {{ bug.title }}
               </span>
             </td>
-            <td style="padding-left:15px;">{{ bug.type.charAt(0).toUpperCase() + bug.type.slice(1) }}</td>
+            <td style="padding-left: 15px">
+              {{ bug.type.charAt(0).toUpperCase() + bug.type.slice(1) }}
+            </td>
             <td>
               <span
                 :class="[
@@ -214,14 +245,48 @@
             <option :value="25">25</option>
             <option :value="50">50</option>
           </select>
-          
+
           <span class="chevron">&#9662;</span>
-          <span class="page-range">{{ startEntry }}-{{ endEntry }} of {{ totalPages }}</span>
+          <span class="page-range"
+            >{{ startEntry }}-{{ endEntry }} of {{ totalPages }}</span
+          >
           <button class="chevron-btn" @click="prevPage" :disabled="page === 1">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 6L9 12L15 18" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 6L9 12L15 18"
+                stroke="#6B7280"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
-          <button class="chevron-btn" @click="nextPage" :disabled="page === totalPages">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6L15 12L9 18" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <button
+            class="chevron-btn"
+            @click="nextPage"
+            :disabled="page === totalPages"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9 6L15 12L9 18"
+                stroke="#6B7280"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
         </div>
       </div>
@@ -241,10 +306,10 @@
 import axios from "axios";
 import AddBugModal from "../components/AddBugModal.vue";
 import NavBar from "../components/NavBar.vue";
-import api from "../axios"; 
-import bugService from '../services/bugService';
-import userService from '../services/userService';
-import projectService from '../services/projectService';
+import api from "../axios";
+import bugService from "../services/bugService";
+import userService from "../services/userService";
+import projectService from "../services/projectService";
 
 export default {
   name: "Bugs",
@@ -310,7 +375,10 @@ export default {
           showStatusMenu: false,
         }));
       } catch (err) {
-        alert("Failed to fetch bugs: " + (err.response?.data?.message || err.message));
+        alert(
+          "Failed to fetch bugs: " +
+            (err.response?.data?.message || err.message)
+        );
       }
     },
 
@@ -325,7 +393,7 @@ export default {
       try {
         const assignees = await projectService.getAssignees(this.projectId);
         this.projectDevelopers = assignees
-          .filter((a) => a.role === 'developer')
+          .filter((a) => a.role === "developer")
           .map((a) => a.user);
       } catch (err) {
         this.projectDevelopers = [];
@@ -357,7 +425,10 @@ export default {
         await bugService.updateBugStatus(bug.id, status);
         this.fetchBugs();
       } catch (err) {
-        alert("Failed to update bug status: " + (err.response?.data?.message || err.message));
+        alert(
+          "Failed to update bug status: " +
+            (err.response?.data?.message || err.message)
+        );
       }
     },
     async deleteBug(bug) {
@@ -366,7 +437,10 @@ export default {
         await bugService.deleteBug(bug.id);
         this.fetchBugs();
       } catch (err) {
-        alert("Failed to delete bug: " + (err.response?.data?.message || err.message));
+        alert(
+          "Failed to delete bug: " +
+            (err.response?.data?.message || err.message)
+        );
       }
     },
     prevPage() {
@@ -496,7 +570,7 @@ h1 {
   height: 14px;
   position: absolute;
 
-  top: 31.2%;;
+  top: 31.2%;
   left: 259px;
   transform: translateY(-50%);
   opacity: 1;
@@ -658,14 +732,13 @@ h1 {
   background: #fff;
   vertical-align: middle;
 }
-.bugs-table td img{
-margin-left: 33px;
+.bugs-table td img {
+  margin-left: 33px;
 }
 .bugs-table td:first-child {
   width: 48px;
   padding-left: 24px;
 }
-
 
 .bugs-table td:last-child {
   text-align: right;
@@ -789,7 +862,7 @@ margin-left: 33px;
   font-size: 9px;
   padding: 10px 24px;
   cursor: pointer;
-  
+
   line-height: 18.33px;
   letter-spacing: 0%;
   color: #23272e;
@@ -812,13 +885,13 @@ margin-left: 33px;
   background-color: #fdf2f2;
 }
 .status-option-inprogress {
-   width: 64px;
+  width: 64px;
   height: 18px;
   background-color: #eef3ff;
   color: #007dfa;
 }
 .status-option-closed {
-   width: 48px;
+  width: 48px;
   height: 18px;
   background-color: #00b89414;
   color: #50a885;
@@ -840,13 +913,12 @@ margin-left: 33px;
 .delete-label {
   color: #e74c3c;
   font-family: "Ubuntu";
-font-weight: 500;
-font-size: 8.94px;
+  font-weight: 500;
+  font-size: 8.94px;
 
-line-height: 15.33px;
-letter-spacing: 0%;
-vertical-align: middle;
-
+  line-height: 15.33px;
+  letter-spacing: 0%;
+  vertical-align: middle;
 }
 .delete-icon {
   width: 18px;
@@ -863,7 +935,7 @@ vertical-align: middle;
   justify-content: space-between;
   width: 100%;
   background: #fff;
-  font-family: 'Inter', 'Poppins', sans-serif;
+  font-family: "Inter", "Poppins", sans-serif;
   font-size: 15px;
   color: #6b7280;
   padding: 0 0 0 0;
@@ -873,14 +945,14 @@ vertical-align: middle;
   position: relative;
   box-sizing: border-box;
   position: fixed;
-      top: 860px;
-    left: 132px;
+  top: 860px;
+  left: 132px;
 }
 .pagination-info {
   margin-left: 90px;
   font-size: 15px;
   color: #6b7280;
-  font-family: 'Inter', 'Poppins', sans-serif;
+  font-family: "Inter", "Poppins", sans-serif;
   font-weight: 400;
 }
 .pagination-spacer {
@@ -891,14 +963,13 @@ vertical-align: middle;
   align-items: center;
   gap: 8px;
   margin-right: 90px;
-  
-  transform: translateX(-400px); /* move it 50px to the left */
 
+  transform: translateX(-400px); /* move it 50px to the left */
 }
 .rows-label {
   font-size: 15px;
   color: #6b7280;
-  font-family: 'Inter', 'Poppins', sans-serif;
+  font-family: "Inter", "Poppins", sans-serif;
   font-weight: 400;
   margin-right: 4px;
 }
@@ -907,7 +978,7 @@ vertical-align: middle;
   background: transparent;
   font-size: 15px;
   color: #6b7280;
-  font-family: 'Inter', 'Poppins', sans-serif;
+  font-family: "Inter", "Poppins", sans-serif;
   font-weight: 400;
   outline: none;
   appearance: none;
@@ -925,7 +996,7 @@ vertical-align: middle;
   font-size: 15px;
   color: #6b7280;
   margin-right: 12px;
-  font-family: 'Inter', 'Poppins', sans-serif;
+  font-family: "Inter", "Poppins", sans-serif;
 }
 .chevron-btn {
   background: none;
@@ -1032,12 +1103,11 @@ vertical-align: middle;
 .delete-label {
   color: #e74c3c;
   font-family: "Ubuntu";
-font-weight: 500;
-font-size: 8.94px;
-line-height: 15.33px;
-letter-spacing: 0%;
-vertical-align: middle;
-
+  font-weight: 500;
+  font-size: 8.94px;
+  line-height: 15.33px;
+  letter-spacing: 0%;
+  vertical-align: middle;
 }
 .delete-icon {
   width: 13px;
@@ -1046,9 +1116,6 @@ vertical-align: middle;
   opacity: 0.8;
 }
 th:nth-child(2) {
- padding-left: 25px;
+  padding-left: 25px;
 }
-
-
-
 </style>

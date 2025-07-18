@@ -169,11 +169,12 @@ h2 {
 .form-group label {
   width: 109px;
   height: 24px;
-  font-family: "Poppins";
-  font-weight: 400;
+  font-weight: 500;
   font-size: 16px;
   line-height: 100%;
   letter-spacing: 0%;
+font-family: "Manrope";
+line-height: 100%;
 
   opacity: 1;
 }
@@ -185,6 +186,16 @@ input[type="text"] {
   padding: 16px;
   border: 1.02px solid #f4f4f5;
 }
+
+input[type="text"]::placeholder{
+font-family: "Poppins";
+font-weight: 400;
+font-size: 14.25px;
+line-height: 100%;
+letter-spacing: 0%;
+color: #A1A1AA;
+}
+
 
 .image-upload {
   display: flex;
