@@ -61,7 +61,7 @@ export default {
           desc: "Signup as Developer to assign the relevant task to QA",
         },
         {
-          value: "qa",
+          value: "QA",
           icon: qaIcon,
           title: "QA",
           desc: "Signup as QA to create the bugs and report in tasks",
