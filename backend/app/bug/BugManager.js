@@ -4,7 +4,8 @@ const User = require('../../models/User');
 const Project = require('../../models/Project');
 const { BUG_TYPES } = require('../../enums/Bug');
 const { isUserAssignedToProject, isValidStatusForType, isBugTitleUniqueInProject } = require('../../helpers/assignmentHelper');
-const BugHandler = require('../../handlers');
+const {BugHandler,ProjectHandler,ProjectAssignmentHandler} = require('../../handlers');
+const {AuthUtils} = require ('../../utilities')
 
 class BugManager {
   static async createBug({ title, description, deadline, screenshot, type, status, project_id, developer_id, qa_id }) {
@@ -35,60 +36,43 @@ class BugManager {
 
   static async listBugs(user, filters = {}) {
     const { project_id, status } = filters;
-    const where = {};
-    if (project_id) where.project_id = project_id;
-    if (status) where.status = status;
+    let projectIds = [];
 
     if (user.user_type === 'manager') {
-      const projects = await Project.findAll({ where: { manager_id: user.id } });
-      const projectIds = projects.map(p => p.id);
-      where.project_id = project_id ? project_id : projectIds;
+      projectIds = await ProjectHandler.getProjectIdsByManager(user.id);
     } else if (user.user_type === 'QA') {
-      const assignments = await ProjectAssignment.findAll({ where: { user_id: user.id, role: 'QA' } });
-      const projectIds = assignments.map(a => a.project_id);
-      where.project_id = project_id ? project_id : projectIds;
+      projectIds = await ProjectAssignmentHandler.getProjectIdsByUserAndRole(user.id, 'QA');
     } else if (user.user_type === 'developer') {
-      const assignments = await ProjectAssignment.findAll({ where: { user_id: user.id, role: 'developer' } });
-      const projectIds = assignments.map(a => a.project_id);
-      where[require('sequelize').Op.or] = [
-        { developer_id: user.id },
-        { project_id: project_id ? project_id : projectIds }
-      ];
+      projectIds = await ProjectAssignmentHandler.getProjectIdsByUserAndRole(user.id, 'developer');
     }
-    return Bug.findAll({
-      where,
-      include: [
-        { model: User, as: 'developer', attributes: ['id', 'name', 'email', 'user_type'] },
-        { model: User, as: 'qa', attributes: ['id', 'name', 'email', 'user_type'] }
-      ]
-    });
+
+    return BugHandler.getBugs(user, project_id, status, projectIds);
   }
 
-  static async getBugById(user, bugId) {;
-    const bug = await Bug.findByPk(bugId, {
-      include: [
-        { model: Project, attributes: ['id', 'name', 'manager_id'] },
-        { model: User, as: 'developer', attributes: ['id', 'name', 'email'] },
-        { model: User, as: 'qa', attributes: ['id', 'name', 'email'] }
-      ]
-    });
+   static async getBugById(user, bugId) {
+    const bug = await BugHandler.findBugWithDetails(bugId);
     if (!bug) return null;
+
     if (user.user_type === 'manager') {
-      if (bug.Project.manager_id !== user.id) return null;
+      const isManager = ProjectHandler.isProjectManager(bug.Project, user.id);
+      if (!isManager) return null;
     } else if (user.user_type === 'QA') {
-      if (!(await isUserAssignedToProject(user.id, bug.project_id, 'QA'))) return null;
+      const isAssignedQA = await ProjectAssignmentHandler.isUserAssignedToProject(user.id, bug.project_id, 'QA');
+      if (!isAssignedQA) return null;
     } else if (user.user_type === 'developer') {
-      if (!(await isUserAssignedToProject(user.id, bug.project_id, 'developer')) && bug.developer_id !== user.id) return null;
+      const isAssignedDev = await ProjectAssignmentHandler.isUserAssignedToProject(user.id, bug.project_id, 'developer');
+      const isBugOwner = bug.developer_id === user.id;
+      if (!isAssignedDev && !isBugOwner) return null;
     }
+
     return bug;
   }
 
   static async updateBug(user, bugId, updateData, file) {
-    const bug = await Bug.findByPk(bugId);
-    if (!bug) throw new Error('Bug not found');
+const bug = await BugHandler.findBugById(bugId);
 
-    if (user.user_type === 'manager') {
-      const project = await Project.findByPk(bug.project_id);
+if (AuthUtils.isManager(user)) {
+  const project = await ProjectHandler.getProjectById(bug.project_id);
       if (!project || project.manager_id !== user.id) throw new Error('Access denied');
     } else if (user.user_type === 'QA') {
       if (!(await isUserAssignedToProject(user.id, bug.project_id, 'QA'))) throw new Error('Access denied');
@@ -137,11 +121,11 @@ class BugManager {
   }
 
   static async deleteBug(user, bugId) {
-    const bug = await Bug.findByPk(bugId);
+   const bug = await BugHandler.findBugById(bugId);
     if (!bug) throw new Error('Bug not found');
 
-    if (user.user_type === 'manager') {
-      const project = await Project.findByPk(bug.project_id);
+    if (AuthUtils.isManager(user)) {
+     const project = await ProjectHandler.getProjectById(bug.project_id);
       if (!project || project.manager_id !== user.id) throw new Error('Access denied');
     } else if (user.user_type === 'QA') {
       if (!(await isUserAssignedToProject(user.id, bug.project_id, 'QA'))) throw new Error('Access denied');

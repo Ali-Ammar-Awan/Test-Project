@@ -19,5 +19,21 @@ class ProjectAssignmentHandler {
     await ProjectAssignment.bulkCreate (assignmentData);
     }
 
+    static async getProjectIdsByUserAndRole(userId, role) {
+    const assignments = await ProjectAssignment.findAll({ where: { user_id: userId, role } });
+    return assignments.map(a => a.project_id);
+  }
+
+    static async isUserAssignedToProject(userId, projectId, role) {
+    const assignment = await ProjectAssignment.findOne({
+      where: {
+        user_id: userId,
+        project_id: projectId,
+        role
+      }
+    });
+    return !!assignment;
+  }
+
 }
 module.exports = ProjectAssignmentHandler;

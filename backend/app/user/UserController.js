@@ -1,4 +1,5 @@
 const UserManager = require('./UserManager');
+const Validators=require('../../helpers/Validators');
 
 class UserController {
 

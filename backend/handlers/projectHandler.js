@@ -20,6 +20,12 @@ class ProjectHandler {
     return Project.findAll({ where: { manager_id: managerId } });
   }
 
+
+    static async getProjectIdsByManager(managerId) {
+    const projects = await Project.findAll({ where: { manager_id: managerId } });
+    return projects.map(p => p.id);
+  }
+
     static async _getAssignedProjects(userId) {
     const assignments = await ProjectAssignment.findAll({ where: { user_id: userId } });
     const projectIds = assignments.map(a => a.project_id);
@@ -28,6 +34,7 @@ class ProjectHandler {
 
   static async getProjectById(projectId){
     const project = await Project.findByPk(projectId);
+     if (!project) throw new Error('Project not found');
     return project;
   }
 
@@ -40,6 +47,11 @@ class ProjectHandler {
     await Project.destroy({ where: { id: projectId } });
     return true;
   }
+
+    static isProjectManager(project, userId) {
+    return project.manager_id === userId;
+  }
+
 
 //   static async assignUsersToProject(projectId, managerId, assignments) {
 //     const project = await this.getProjectById(projectId);

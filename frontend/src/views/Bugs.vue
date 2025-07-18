@@ -338,7 +338,7 @@ export default {
           }
         );
 
-        this.projectDevelopers = res.data.assignees
+        this.projectDevelopers = res.data.data
           .filter((a) => a.role === "developer")
           .map((a) => a.user);
       } catch (err) {

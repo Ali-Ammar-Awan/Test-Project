@@ -99,5 +99,9 @@ class AuthUtil{
     return password;
 
   }
+
+  static isManager(user) {
+  return user.user_type === 'manager';
+}
 }
 module.exports = AuthUtil;
