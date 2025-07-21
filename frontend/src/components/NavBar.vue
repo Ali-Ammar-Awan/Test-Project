@@ -19,6 +19,7 @@
         <img src="../assets/notification.png" alt="notification logo">
         <img src="../assets/emailnav.png" alt="email navbar logo">
         <div class="companylogo"><img src="../assets/companylogo.png" alt="company log" ></div>
+        <button class="logout-btn" @click="logout">Logout</button>
     
         
     </div>
@@ -31,7 +32,12 @@
 
 export default {
   name: "NavBar",
-
+  methods: {
+    logout() {
+      localStorage.removeItem('token');
+      this.$router.push({ name: 'SignIn' });
+    }
+  }
 }
 
 </script>
@@ -125,5 +131,19 @@ margin-left: 10px;
     margin-left: 5px;
     border-width: 1px;
 
+}
+.logout-btn {
+  margin-top: 48px;
+  margin-left: 20px;
+  padding: 8px 18px;
+  background: #ec5962;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: "Inter";
+  font-weight: 600;
+  height: 40px;
 }
 </style>

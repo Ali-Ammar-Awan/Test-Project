@@ -49,8 +49,11 @@ router.beforeEach((to, from, next) => {
   const loggedIn = !!localStorage.getItem('token');
 
   if (authRequired && !loggedIn) {
-  
     return next({ name: 'SignIn' });
+  }
+  
+  if (loggedIn && publicPages.includes(to.name)) {
+    return next({ name: 'Projects' });
   }
   next();
 });

@@ -1,45 +1,31 @@
-const { BugConstant, ErrorCodes } = require('../../constants');
+const BugConstants = require('../../constants/Bugs');
+const ErrorCodes = require('../../constants/ErrorCodes');
 const BugManager = require('./BugManager');
-const Validators = require('../../helpers/Validators');
 
 class BugController {
   static async create(req, res) {
     try {
-      const { title, description, deadline, type, status, project_id, developer_id } = req.body;
-      const screenshot = req.file ? req.file.filename : undefined;
-      const qa_id = req.user.id;
-      const bug = await BugManager.createBug({
-        title,
-        description,
-        deadline,
-        screenshot,
-        type,
-        status,
-        project_id,
-        developer_id,
-        qa_id
-      });
-      res.json({ message: BugConstant.MESSAGES.CREATE_SUCCESS , bug });
-    }catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      const bugData = { ...req.body, screenshot: req.file ? req.file.filename : undefined, qa_id: req.user.id };
+      const bug = await BugManager.createBug(bugData);
+      res.status(ErrorCodes.SUCCESS).json({ success: true, message: BugConstants.MESSAGES.CREATE_SUCCESS, bug });
+    } catch (err) {
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : BugConstant.MESSAGES.ERROR_CREATING
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || BugConstants.MESSAGES.ERROR_CREATING
       });
     }
   }
 
   static async list(req, res) {
     try {
-      const filters = {
-        project_id: req.query.project_id,
-        status: req.query.status
-      };
-      const bugs = await BugManager.listBugs(req.user, filters);
-      res.status(Validators.validateCode(ErrorCodes.SUCCESS, ErrorCodes.SUCCESS)) .json({ bugs });
+      const bugs = await BugManager.listBugs(req.user, req.query);
+      res.status(ErrorCodes.SUCCESS).json({ success: true, bugs });
     } catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : BugConstant.MESSAGES.ERROR_CREATING
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || BugConstants.MESSAGES.ERROR_LISTING
       });
     }
   }
@@ -47,14 +33,12 @@ class BugController {
   static async getById(req, res) {
     try {
       const bug = await BugManager.getBugById(req.user, req.params.id);
-      if (!bug) {
-        return res.json({ error: 'Bug not found or access denied' });
-      }
-      res.status(Validators.validateCode(ErrorCodes.SUCCESS, ErrorCodes.SUCCESS)) .json({ bugs });
-    }  catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(ErrorCodes.SUCCESS).json({ success: true, bug });
+    } catch (err) {
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : BugConstant.MESSAGES.ERROR_FETCHING
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || BugConstants.MESSAGES.ERROR_FETCHING
       });
     }
   }
@@ -62,11 +46,12 @@ class BugController {
   static async update(req, res) {
     try {
       const bug = await BugManager.updateBug(req.user, req.params.id, req.body, req.file);
-      res.json({ message: 'Bug updated successfully', bug });
+      res.status(ErrorCodes.SUCCESS).json({ success: true, message: BugConstants.MESSAGES.UPDATE_SUCCESS, bug });
     } catch (err) {
-      return res.status(Validators.validateCode(err.message, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : BugConstant.MESSAGES.ERROR_UPDATING
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || BugConstants.MESSAGES.ERROR_UPDATING
       });
     }
   }
@@ -74,11 +59,12 @@ class BugController {
   static async delete(req, res) {
     try {
       await BugManager.deleteBug(req.user, req.params.id);
-      res.json({ message: 'Bug deleted successfully' });
+      res.status(ErrorCodes.SUCCESS).json({ success: true, message: BugConstants.MESSAGES.DELETE_SUCCESS });
     } catch (err) {
-      return res.status(Validators.validateCode(err.message, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : BugConstant.MESSAGES.ERROR_DELETING
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || BugConstants.MESSAGES.ERROR_DELETING
       });
     }
   }

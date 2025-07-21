@@ -30,6 +30,11 @@ class AuthUtil{
 
     }
 
+    // Validate user_type
+    const allowedTypes = ['QA', 'developer', 'manager'];
+    if (!allowedTypes.includes(data.user_type)) {
+      throw new Exception(UserConstants.MESSAGES.INVALID_USER_TYPE, ErrorCodes.UNPROCESSABLE_ENTITY, { reportError: true }).toJson();
+    }
   }
 
 
@@ -71,7 +76,12 @@ class AuthUtil{
 
       console.log(`validateUserToAuthenticate:: User does not exist. user:: `, user);
 
-      throw new Exception(UserConstants.MESSAGES.USER_DOES_NOT_EXIST, ErrorCodes.BAD_REQUEST, { reportError: true }).toJson();
+      throw new Exception(
+  UserConstants.MESSAGES.USER_DOES_NOT_EXIST,
+  ErrorCodes.BAD_REQUEST,
+  { reportError: true }
+);
+
 
     }
 

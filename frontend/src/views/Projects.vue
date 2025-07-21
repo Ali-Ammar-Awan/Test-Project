@@ -101,7 +101,7 @@
     <AddProjectModal
       :visible="showAddModal"
       @close="showAddModal = false"
-      @project-added="fetchProjects"
+      @project-added="handleProjectAdded"
     />
   </div>
 </template>
@@ -172,6 +172,11 @@ export default {
             (err.response?.data?.message || err.message)
         );
       }
+    },
+    handleProjectAdded() {
+      // Close the modal and refresh the project list
+      this.showAddModal = false;
+      this.fetchProjects();
     },
     prevPage() {
       if (this.page > 1) this.page--;

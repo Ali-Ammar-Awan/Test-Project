@@ -59,8 +59,7 @@ const bug = await Bug.create({
 
   static async findBugById(bugId) {
   const bug = await Bug.findByPk(bugId);
-  if (!bug) throw new Error('Bug not found');
-  return bug;
+    return bug || null;
 }
 }
 

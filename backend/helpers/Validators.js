@@ -1,14 +1,8 @@
+const { ErrorCodes } = require('../constants/ErrorCodes');
+
 class Validators{
-  static validateCode (code, defaultCode) {
-
-    if (code >= 400 && code < 500) {
-
-      return code;
-
-    }
-
-    return defaultCode;
-  
+  static validateCode(code, defaultCode) {
+    return Object.values(ErrorCodes).includes(code) ? code : defaultCode;
   }
 
    static isValidateEmail (email) {

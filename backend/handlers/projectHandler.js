@@ -34,8 +34,7 @@ class ProjectHandler {
 
   static async getProjectById(projectId){
     const project = await Project.findByPk(projectId);
-     if (!project) throw new Error('Project not found');
-    return project;
+    return project || null;
   }
 
   static async updateProject(project,updateData){

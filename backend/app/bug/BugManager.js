@@ -1,37 +1,36 @@
-const Bug = require('../../models/Bug');
-const ProjectAssignment = require('../../models/ProjectAssignment');
-const User = require('../../models/User');
-const Project = require('../../models/Project');
 const { BUG_TYPES } = require('../../enums/Bug');
 const { isUserAssignedToProject, isValidStatusForType, isBugTitleUniqueInProject } = require('../../helpers/assignmentHelper');
-const {BugHandler,ProjectHandler,ProjectAssignmentHandler} = require('../../handlers');
-const {AuthUtils} = require ('../../utilities')
+const { BugHandler, ProjectHandler, ProjectAssignmentHandler } = require('../../handlers');
+const { AuthUtils } = require('../../utilities');
+const Exception = require('../../helpers/Exception');
+const BugConstants = require('../../constants/Bugs');
+const ErrorCodes = require('../../constants/ErrorCodes');
 
 class BugManager {
   static async createBug({ title, description, deadline, screenshot, type, status, project_id, developer_id, qa_id }) {
     if (!title || !type || !status || !project_id || !developer_id || !qa_id) {
-      throw new Error('Missing required fields');
+      throw new Exception(BugConstants.MESSAGES.MISSING_FIELDS, ErrorCodes.BAD_REQUEST);
     }
     if (!BUG_TYPES.includes(type)) {
-      throw new Error('Invalid bug type');
+      throw new Exception(BugConstants.MESSAGES.INVALID_BUG_TYPE, ErrorCodes.UNPROCESSABLE_ENTITY);
     }
     if (!isValidStatusForType(type, status)) {
-      throw new Error('Invalid status for ' + type);
+      throw new Exception(BugConstants.MESSAGES.INVALID_STATUS, ErrorCodes.UNPROCESSABLE_ENTITY);
     }
     if (screenshot && !screenshot.match(/\.(png|gif)$/i)) {
-      throw new Error('Screenshot must be a PNG or GIF image');
+      throw new Exception(BugConstants.MESSAGES.INVALID_SCREENSHOT, ErrorCodes.BAD_REQUEST);
     }
     if (!(await isUserAssignedToProject(qa_id, project_id, 'QA'))) {
-      throw new Error('QA is not assigned to this project');
+      throw new Exception(BugConstants.MESSAGES.QA_NOT_ASSIGNED, ErrorCodes.FORBIDDEN);
     }
     if (!(await isUserAssignedToProject(developer_id, project_id, 'developer'))) {
-      throw new Error('Developer is not assigned to this project');
+      throw new Exception(BugConstants.MESSAGES.DEVELOPER_NOT_ASSIGNED, ErrorCodes.FORBIDDEN);
     }
     if (!(await isBugTitleUniqueInProject(title, project_id))) {
-      throw new Error('Bug title must be unique within the project');
+      throw new Exception(BugConstants.MESSAGES.BUG_TITLE_NOT_UNIQUE, ErrorCodes.CONFLICT_WITH_CURRENT_STATE);
     }
-    const bug = await BugHandler.createBug({ title, description, deadline, screenshot, type, status, project_id, developer_id, qa_id });
-    return bug;
+
+    return BugHandler.createBug({ title, description, deadline, screenshot, type, status, project_id, developer_id, qa_id });
   }
 
   static async listBugs(user, filters = {}) {
@@ -40,10 +39,8 @@ class BugManager {
 
     if (user.user_type === 'manager') {
       projectIds = await ProjectHandler.getProjectIdsByManager(user.id);
-    } else if (user.user_type === 'QA') {
-      projectIds = await ProjectAssignmentHandler.getProjectIdsByUserAndRole(user.id, 'QA');
-    } else if (user.user_type === 'developer') {
-      projectIds = await ProjectAssignmentHandler.getProjectIdsByUserAndRole(user.id, 'developer');
+    } else {
+      projectIds = await ProjectAssignmentHandler.getProjectIdsByUserAndRole(user.id, user.user_type);
     }
 
     return BugHandler.getBugs(user, project_id, status, projectIds);
@@ -51,36 +48,38 @@ class BugManager {
 
    static async getBugById(user, bugId) {
     const bug = await BugHandler.findBugWithDetails(bugId);
-    if (!bug) return null;
-
-    if (user.user_type === 'manager') {
-      const isManager = ProjectHandler.isProjectManager(bug.Project, user.id);
-      if (!isManager) return null;
-    } else if (user.user_type === 'QA') {
-      const isAssignedQA = await ProjectAssignmentHandler.isUserAssignedToProject(user.id, bug.project_id, 'QA');
-      if (!isAssignedQA) return null;
-    } else if (user.user_type === 'developer') {
-      const isAssignedDev = await ProjectAssignmentHandler.isUserAssignedToProject(user.id, bug.project_id, 'developer');
-      const isBugOwner = bug.developer_id === user.id;
-      if (!isAssignedDev && !isBugOwner) return null;
+    if (!bug) {
+      throw new Exception(BugConstants.MESSAGES.BUG_NOT_FOUND, ErrorCodes.DOCUMENT_NOT_FOUND);
     }
 
+    if (user.user_type === 'manager') {
+      if (bug.Project.manager_id !== user.id) {
+        throw new Exception(BugConstants.MESSAGES.ACCESS_DENIED, ErrorCodes.FORBIDDEN);
+      }
+    } else {
+      const isAssigned = await ProjectAssignmentHandler.isUserAssignedToProject(user.id, bug.project_id, user.user_type);
+      if (!isAssigned) {
+        throw new Exception(BugConstants.MESSAGES.ACCESS_DENIED, ErrorCodes.FORBIDDEN);
+    }
+    }
     return bug;
   }
 
   static async updateBug(user, bugId, updateData, file) {
 const bug = await BugHandler.findBugById(bugId);
-
-if (AuthUtils.isManager(user)) {
-  const project = await ProjectHandler.getProjectById(bug.project_id);
-      if (!project || project.manager_id !== user.id) throw new Error('Access denied');
-    } else if (user.user_type === 'QA') {
-      if (!(await isUserAssignedToProject(user.id, bug.project_id, 'QA'))) throw new Error('Access denied');
-    } else if (user.user_type === 'developer') {
-      if (bug.developer_id !== user.id) throw new Error('Access denied');
-    } else {
-      throw new Error('Access denied');
+    if (!bug) {
+        throw new Exception(BugConstants.MESSAGES.BUG_NOT_FOUND, ErrorCodes.DOCUMENT_NOT_FOUND);
     }
+
+    // Authorization Check
+    const canUpdate = (AuthUtils.isManager(user) && bug.Project.manager_id === user.id) ||
+                      (user.user_type === 'QA' && await isUserAssignedToProject(user.id, bug.project_id, 'QA')) ||
+                      (user.user_type === 'developer' && bug.developer_id === user.id);
+
+    if (!canUpdate) {
+      throw new Exception(BugConstants.MESSAGES.ACCESS_DENIED, ErrorCodes.FORBIDDEN);
+    }
+
     let allowedFields = [];
     if (user.user_type === 'manager') {
       allowedFields = ['title', 'description', 'deadline', 'type', 'status', 'screenshot', 'developer_id'];
@@ -89,49 +88,55 @@ if (AuthUtils.isManager(user)) {
     } else if (user.user_type === 'developer') {
       allowedFields = ['status'];
     }
+
     const updates = {};
     for (const key of allowedFields) {
       if (updateData[key] !== undefined) {
         updates[key] = updateData[key];
       }
     }
+
     if (file) {
-      if (!file.filename.match(/\.(png|gif)$/i)) {
-        throw new Error('Screenshot must be a PNG or GIF image');
-      }
       updates.screenshot = file.filename;
     }
+
+    // Validation for updates
+    if (updates.type || updates.status) {
     const type = updates.type || bug.type;
     const status = updates.status || bug.status;
     if (!isValidStatusForType(type, status)) {
-      throw new Error('Invalid status for ' + type);
+          throw new Exception(BugConstants.MESSAGES.INVALID_STATUS, ErrorCodes.UNPROCESSABLE_ENTITY);
+        }
     }
+    
     if (updates.title && updates.title !== bug.title) {
       if (!(await isBugTitleUniqueInProject(updates.title, bug.project_id, bug.id))) {
-        throw new Error('Bug title must be unique within the project');
+        throw new Exception(BugConstants.MESSAGES.BUG_TITLE_NOT_UNIQUE, ErrorCodes.CONFLICT_WITH_CURRENT_STATE);
       }
     }
     if (updates.developer_id && updates.developer_id !== bug.developer_id) {
       if (!(await isUserAssignedToProject(updates.developer_id, bug.project_id, 'developer'))) {
-        throw new Error('Developer is not assigned to this project');
+        throw new Exception(BugConstants.MESSAGES.DEVELOPER_NOT_ASSIGNED, ErrorCodes.FORBIDDEN);
       }
     }
+    
     await bug.update(updates);
     return bug;
   }
 
   static async deleteBug(user, bugId) {
    const bug = await BugHandler.findBugById(bugId);
-    if (!bug) throw new Error('Bug not found');
-
-    if (AuthUtils.isManager(user)) {
-     const project = await ProjectHandler.getProjectById(bug.project_id);
-      if (!project || project.manager_id !== user.id) throw new Error('Access denied');
-    } else if (user.user_type === 'QA') {
-      if (!(await isUserAssignedToProject(user.id, bug.project_id, 'QA'))) throw new Error('Access denied');
-    } else {
-      throw new Error('Access denied');
+    if (!bug) {
+      throw new Exception(BugConstants.MESSAGES.BUG_NOT_FOUND, ErrorCodes.DOCUMENT_NOT_FOUND);
     }
+
+    const canDelete = (AuthUtils.isManager(user) && bug.Project.manager_id === user.id) ||
+                      (user.user_type === 'QA' && await isUserAssignedToProject(user.id, bug.project_id, 'QA'));
+    
+    if (!canDelete) {
+      throw new Exception(BugConstants.MESSAGES.ACCESS_DENIED, ErrorCodes.FORBIDDEN);
+    }
+
     await bug.destroy();
     return true;
   }

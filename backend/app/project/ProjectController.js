@@ -1,24 +1,19 @@
 const ProjectManager = require('./ProjectManager');
-const { getProjectAssignments } = require('../../helpers/projectAssignmentHelper');
-const assignments = require('../../models/ProjectAssignment');
-const User = require('../../models/User');
-const {ProjectConstants}=require('../../constants')
-const Validators = require('../../helpers/Validators');
+const ProjectConstants = require('../../constants/Project');
 const ErrorCodes = require('../../constants/ErrorCodes');
-
 
 class ProjectController {
   static async create(req, res) {
     try {
       const { name, details } = req.body;
-      const manager_id = req.user.id;
       const image = req.file ? req.file.filename : null;
-      const project = await ProjectManager.createProject({ name, details, image, manager_id });
-      res.json({ success: true, data: project });
+      const project = await ProjectManager.createProject({ name, details, image, manager_id: req.user.id });
+      res.status(ErrorCodes.SUCCESS).json({ success: true, data: project });
     } catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : ProjectConstants.MESSAGES.CREATING_PROJECT_FAILED
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || ProjectConstants.MESSAGES.CREATING_PROJECT_FAILED
       });
     }
   }
@@ -26,94 +21,77 @@ class ProjectController {
   static async list(req, res) {
     try {
       const projects = await ProjectManager.getProjectsForUser(req.user);
-      res.json({ projects });
+      res.status(ErrorCodes.SUCCESS).json({ success: true, projects });
     } catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_FETCH
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || ProjectConstants.MESSAGES.FAILED_FETCH
       });
     }
   }
 
   static async getById(req, res) {
     try {
-      const projectId = req.params.id;
-      const project = await ProjectManager.getProjectByIdForUser(projectId, req.user);
-      res.json({ project });
+      const project = await ProjectManager.getProjectByIdForUser(req.params.id, req.user);
+      res.status(ErrorCodes.SUCCESS).json({ success: true, project });
     } catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_FETCH
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || ProjectConstants.MESSAGES.FAILED_FETCH
       });
     }
   }
 
   static async update(req, res) {
     try {
-      const projectId = req.params.id;
-      const managerId = req.user.id;
-      const updateData = req.body;
-      const project = await ProjectManager.updateProjectById(projectId, managerId, updateData);
-     
-      res.json({ message:ProjectConstants.MESSAGES.SUCCESSFUL_UPDATE, project });
+      const project = await ProjectManager.updateProjectById(req.params.id, req.user.id, req.body);
+      res.status(ErrorCodes.SUCCESS).json({ success: true, message: ProjectConstants.MESSAGES.SUCCESSFUL_UPDATE, project });
     } catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : ProjectConstants.MESSAGES.UNSUCCESSFUL_UPDATE
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || ProjectConstants.MESSAGES.UNSUCCESSFUL_UPDATE
       });
     }
   }
+
   static async delete(req, res) {
     try {
-      const projectId = req.params.id;
-      const managerId = req.user.id;
-      await ProjectManager.deleteProjectById(projectId, managerId);
-      return res.json({
-        success: true,
-        message: ProjectConstants.MESSAGES.PROJECT_DELETED || 'Project deleted successfully'
-      });
+      await ProjectManager.deleteProjectById(req.params.id, req.user.id);
+      res.status(ErrorCodes.SUCCESS).json({ success: true, message: ProjectConstants.MESSAGES.PROJECT_DELETED });
     } catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_DELETE
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || ProjectConstants.MESSAGES.FAILED_DELETE
       });
     }
   }
 
   static async assignUsers(req, res) {
     try {
-      const projectId = req.params.id;
-      const managerId = req.user.id;
-      const { assignments } = req.body;
-      if (!assignments) {
-        return json({ success: false, message: 'Assignments data is required' });
-      }
-      const result = await ProjectManager.assignUsersToProject(projectId, managerId, assignments);
-      return res.json({
-        success: true,
-        message: ProjectConstants.MESSAGES.USERS_ASSIGNED || 'Users assigned to project successfully',
-        data: result
-      });
+      const result = await ProjectManager.assignUsersToProject(req.params.id, req.user.id, req.body.assignments);
+      res.status(ErrorCodes.SUCCESS).json({ success: true, message: ProjectConstants.MESSAGES.USERS_ASSIGNED, data: result });
     } catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_ASSIGN
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || ProjectConstants.MESSAGES.FAILED_ASSIGN
       });
     }
   }
 
   static async getAssignees(req, res) {
     try {
-      const projectId = req.params.id;
-      const assignees = await getProjectAssignments(projectId);
-      return res.status(200).json({
-        success: true,
-        data: assignees
-      });
+      const assignees = await ProjectManager.getProjectAssignees(req.params.id, req.user);
+      res.status(ErrorCodes.SUCCESS).json({ success: true, data: assignees });
     } catch (err) {
-      return res.status(Validators.validateCode(err.code, ErrorCodes.INTERNAL_SERVER_ERROR) || ErrorCodes.INTERNAL_SERVER_ERROR).json({
+      res.status(err.code || ErrorCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: err.reportError ? err.message : ProjectConstants.MESSAGES.FAILED_FETCH_ASSIGNES
+        code: err.code || ErrorCodes.INTERNAL_SERVER_ERROR,
+        message: err.message || ProjectConstants.MESSAGES.FAILED_FETCH_ASSIGNEES
       });
     }
   }
