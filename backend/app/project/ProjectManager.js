@@ -1,12 +1,12 @@
 const Project = require('../../models/Project');
-const ProjectAssignment = require('../../models/ProjectAssignment');
 const User = require('../../models/User');
-const { getProjectAssignments } = require('../../helpers/projectAssignmentHelper');
 const { ProjectHandler, UserHandler, ProjectAssignmentHandler } = require('../../handlers');
 const { ProjectUtils } = require('../../utilities');
 const Exception = require('../../helpers/Exception');
 const ProjectConstants = require('../../constants/Project');
+const { FEATURE_STATUSES, BUG_STATUSES } = require('../../enums/Bug');
 const ErrorCodes = require('../../constants/ErrorCodes');
+
 
 class ProjectManager {
   static async createProject({ name, details, image, manager_id }) {
@@ -17,7 +17,7 @@ class ProjectManager {
   }
 
   static async getProjectsForUser(user) {
-    if (ProjectUtils.validateUserType(user)) { // Assumes this utility checks for 'manager'
+    if (ProjectUtils.validateUserType(user)) { 
       return ProjectHandler._getManagerProjects(user.id);
     } else {
       return ProjectHandler._getAssignedProjects(user.id);
@@ -35,7 +35,7 @@ static async getProjectByIdForUser(projectId, user) {
         throw new Exception(ProjectConstants.MESSAGES.NOT_PROJECT_MANAGER, ErrorCodes.FORBIDDEN);
       }
     } else {
-      const isAssigned = await ProjectAssignmentHandler.isUserAssignedToProject(user.id, projectId);
+      const isAssigned = await UserHandler.isUserAssignedToProject(user.id, projectId);
       if (!isAssigned) {
         throw new Exception(ProjectConstants.MESSAGES.DO_NOT_HAVE_ACCESS, ErrorCodes.FORBIDDEN);
       }
@@ -95,7 +95,7 @@ const project = await ProjectHandler.getProjectById(projectId);
     }));
     await ProjectAssignmentHandler.bulkcreation(assignmentData);
    
-    return getProjectAssignments(projectId);
+    return ProjectAssignmentHandler.getProjectAssignments(projectId);
   }
 
   static async getProjectAssignees(projectId, user) {
@@ -106,13 +106,13 @@ const project = await ProjectHandler.getProjectById(projectId);
 
       // Allow if manager OR assigned as QA
       const isManager = project.manager_id === user.id;
-      const isQA = await ProjectAssignmentHandler.isUserAssignedToProject(user.id, projectId, 'QA');
+      const isQA = await UserHandler.isUserAssignedToProject(user.id, projectId, 'QA');
 
       if (!isManager && !isQA) {
           throw new Exception(ProjectConstants.MESSAGES.DO_NOT_HAVE_ACCESS, ErrorCodes.FORBIDDEN);
       }
 
-      return getProjectAssignments(projectId);
+      return ProjectAssignmentHandler.getProjectAssignments(projectId);
   }
 }
 

@@ -61,6 +61,16 @@ const bug = await Bug.create({
   const bug = await Bug.findByPk(bugId);
     return bug || null;
 }
+
+static async isBugTitleUniqueInProject(title, projectId, excludeBugId = null) {
+  const where = { title, project_id: projectId };
+  if (excludeBugId) where.id = { [Op.ne]: excludeBugId };
+;
+  const existing = await Bug.findOne({ where });
+  return !existing;
+}
+
+
 }
 
 module.exports=BugHandler;

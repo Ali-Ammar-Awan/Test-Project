@@ -1,11 +1,11 @@
 const Project = require('../models/Project');
 const ProjectAssignment = require('../models/ProjectAssignment');
 const User = require('../models/User');
-const { getProjectAssignments } = require('../helpers/projectAssignmentHelper');
 const { ProjectUtils } = require('../utilities');
 const Exception = require('../helpers/Exception');
 const { ErrorCodes } = require('../constants');
 const { ProjectConstants } = require('../constants');
+const { FEATURE_STATUSES, BUG_STATUSES } = require('../enums/Bug');
 
 
 
@@ -34,6 +34,25 @@ class ProjectAssignmentHandler {
     });
     return !!assignment;
   }
+
+  static async getProjectAssignments(projectId) {
+  const assignments = await ProjectAssignment.findAll({
+    where: { project_id: projectId },
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'name', 'email', 'user_type']
+      }
+    ]
+  });
+
+  return assignments.map(assignment => ({
+    user_id: assignment.user_id,
+    role: assignment.role,
+    user: assignment.user
+  }));
+}
 
 }
 module.exports = ProjectAssignmentHandler;

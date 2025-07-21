@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const ProjectAssignment = require('../models/ProjectAssignment');
 const Bug = require('../models/Bug');
-const { FEATURE_STATUSES, BUG_STATUSES } = require('../enums/Bug');
+const { BUG_STATUSES, FEATURE_STATUSES } = require('../enums/Bug');
 
 async function isUserAssignedToProject(userId, projectId, role) {
   return !!(await ProjectAssignment.findOne({ where: { user_id: userId, project_id: projectId, role } }));

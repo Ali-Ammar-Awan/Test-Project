@@ -33,6 +33,12 @@ class UserHandler {
       order: [['name', 'ASC']],
     });
   }
+
+
+
+static async  isUserAssignedToProject(userId, projectId, role) {
+  return !!(await ProjectAssignment.findOne({ where: { user_id: userId, project_id: projectId, role } }));
+}
 }
 
 module.exports = UserHandler;

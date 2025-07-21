@@ -1,11 +1,12 @@
 const { BUG_TYPES } = require('../../enums/Bug');
-const { isUserAssignedToProject, isValidStatusForType, isBugTitleUniqueInProject } = require('../../helpers/assignmentHelper');
+const {isValidStatusForType} = require('../../helpers/Validators');
 const { BugHandler, ProjectHandler, ProjectAssignmentHandler } = require('../../handlers');
 const { AuthUtils } = require('../../utilities');
 const Exception = require('../../helpers/Exception');
 const BugConstants = require('../../constants/Bugs');
 const ErrorCodes = require('../../constants/ErrorCodes');
-
+const {UserHandler} = require('../../handlers')
+const { FEATURE_STATUSES, BUG_STATUSES } = require('../../enums/Bug');
 class BugManager {
   static async createBug({ title, description, deadline, screenshot, type, status, project_id, developer_id, qa_id }) {
     if (!title || !type || !status || !project_id || !developer_id || !qa_id) {
@@ -20,13 +21,13 @@ class BugManager {
     if (screenshot && !screenshot.match(/\.(png|gif)$/i)) {
       throw new Exception(BugConstants.MESSAGES.INVALID_SCREENSHOT, ErrorCodes.BAD_REQUEST);
     }
-    if (!(await isUserAssignedToProject(qa_id, project_id, 'QA'))) {
+    if (!(await ProjectAssignmentHandler.isUserAssignedToProject(qa_id, project_id, 'QA'))) {
       throw new Exception(BugConstants.MESSAGES.QA_NOT_ASSIGNED, ErrorCodes.FORBIDDEN);
     }
-    if (!(await isUserAssignedToProject(developer_id, project_id, 'developer'))) {
+    if (!(await ProjectAssignmentHandler.isUserAssignedToProject(developer_id, project_id, 'developer'))) {
       throw new Exception(BugConstants.MESSAGES.DEVELOPER_NOT_ASSIGNED, ErrorCodes.FORBIDDEN);
     }
-    if (!(await isBugTitleUniqueInProject(title, project_id))) {
+    if (!(await BugHandler.isBugTitleUniqueInProject(title, project_id))) {
       throw new Exception(BugConstants.MESSAGES.BUG_TITLE_NOT_UNIQUE, ErrorCodes.CONFLICT_WITH_CURRENT_STATE);
     }
 
@@ -73,7 +74,7 @@ const bug = await BugHandler.findBugById(bugId);
 
     // Authorization Check
     const canUpdate = (AuthUtils.isManager(user) && bug.Project.manager_id === user.id) ||
-                      (user.user_type === 'QA' && await isUserAssignedToProject(user.id, bug.project_id, 'QA')) ||
+                      (user.user_type === 'QA' && await ProjectAssignmentHandler.isUserAssignedToProject(user.id, bug.project_id, 'QA')) ||
                       (user.user_type === 'developer' && bug.developer_id === user.id);
 
     if (!canUpdate) {
@@ -110,12 +111,12 @@ const bug = await BugHandler.findBugById(bugId);
     }
     
     if (updates.title && updates.title !== bug.title) {
-      if (!(await isBugTitleUniqueInProject(updates.title, bug.project_id, bug.id))) {
+      if (!(await BugHandler.isBugTitleUniqueInProject(updates.title, bug.project_id, bug.id))) {
         throw new Exception(BugConstants.MESSAGES.BUG_TITLE_NOT_UNIQUE, ErrorCodes.CONFLICT_WITH_CURRENT_STATE);
       }
     }
     if (updates.developer_id && updates.developer_id !== bug.developer_id) {
-      if (!(await isUserAssignedToProject(updates.developer_id, bug.project_id, 'developer'))) {
+      if (!(await UserHandler.isUserAssignedToProject(updates.developer_id, bug.project_id, 'developer'))) {
         throw new Exception(BugConstants.MESSAGES.DEVELOPER_NOT_ASSIGNED, ErrorCodes.FORBIDDEN);
       }
     }
@@ -131,7 +132,7 @@ const bug = await BugHandler.findBugById(bugId);
     }
 
     const canDelete = (AuthUtils.isManager(user) && bug.Project.manager_id === user.id) ||
-                      (user.user_type === 'QA' && await isUserAssignedToProject(user.id, bug.project_id, 'QA'));
+                      (user.user_type === 'QA' && await UserHandler.isUserAssignedToProject(user.id, bug.project_id, 'QA'));
     
     if (!canDelete) {
       throw new Exception(BugConstants.MESSAGES.ACCESS_DENIED, ErrorCodes.FORBIDDEN);
