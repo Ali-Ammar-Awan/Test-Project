@@ -27,7 +27,8 @@ export default {
             iconBg: iconBgSet[i % iconBgSet.length],
             totalBugs,
             resolvedBugs,
-            imageUrl: p.image ? `http://localhost:5000/uploads/${p.image}` : null,
+            imageUrl: p.image ? `${process.env.VUE_APP_API_BASE_URL}/uploads/${p.image}` : null
+
           };
         } catch (err) {
           return {
@@ -36,7 +37,8 @@ export default {
             iconBg: iconBgSet[i % iconBgSet.length],
             totalBugs: 0,
             resolvedBugs: 0,
-            imageUrl: p.image ? `http://localhost:5000/uploads/${p.image}` : null,
+            imageUrl: p.image ? `${process.env.VUE_APP_API_BASE_URL}/uploads/${p.image}` : null
+
           };
         }
       })
